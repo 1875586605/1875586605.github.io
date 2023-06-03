@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang='zh-CN'>
+
+<head>
+  <meta name="generator" content="Hexo 6.3.0">
+  <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.19.0">
+  <meta charset="utf-8">
+  
+
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  <link rel='dns-prefetch' href='https://gcore.jsdelivr.net'>
+  <link rel="preconnect" href="https://gcore.jsdelivr.net" crossorigin>
+  <link rel='dns-prefetch' href='//unpkg.com'>
+
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" content="#f8f8f8">
+  
+  <title>java集成华为推送 - 彬的博客</title>
+
+  
+    <meta name="description" content="集成华为推送这类推送一般官方文档都比较详细，如果想要更加详细的了解建议查看官方文档。 官方文档地址：https:&#x2F;&#x2F;developer.huawei.com&#x2F;consumer&#x2F;cn&#x2F;service&#x2F;hms&#x2F;pushservice.html 华为推送服务在开发前需要些准备 1.注册认证成为开发者 2.配置应用签名 3.创建产品和应用 4.开通推送服务 这些步骤按照官方文档一步步来就行，我这边是直接拿">
+<meta property="og:type" content="article">
+<meta property="og:title" content="java集成华为推送">
+<meta property="og:url" content="http://binvv.com/2023/06/03/java%E9%9B%86%E6%88%90%E5%8D%8E%E4%B8%BA%E6%8E%A8%E9%80%81/index.html">
+<meta property="og:site_name" content="彬的博客">
+<meta property="og:description" content="集成华为推送这类推送一般官方文档都比较详细，如果想要更加详细的了解建议查看官方文档。 官方文档地址：https:&#x2F;&#x2F;developer.huawei.com&#x2F;consumer&#x2F;cn&#x2F;service&#x2F;hms&#x2F;pushservice.html 华为推送服务在开发前需要些准备 1.注册认证成为开发者 2.配置应用签名 3.创建产品和应用 4.开通推送服务 这些步骤按照官方文档一步步来就行，我这边是直接拿">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-06-03T08:11:05.884Z">
+<meta property="article:modified_time" content="2023-06-03T08:26:32.403Z">
+<meta property="article:author" content="彬">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  
+
+  <!-- feed -->
+  
+
+  
+    
+<link rel="stylesheet" href="/css/main.css">
+
+  
+
+  
+
+  
+
+  
+
+
+  
+</head>
+
+<body>
+  
+
+
+
+
+  <div class='l_body' id='start'>
+    <aside class='l_left' layout='post'>
+    
+
+  
+
+<header class="header"><div class="logo-wrap"><a class="title" href="/"><div class="main" ff="title">彬的博客</div><div class="sub normal cap">苦逼的程序员</div><div class="sub hover cap" style="opacity:0"> 996加班中</div></a></div>
+
+<nav class="menu dis-select"></nav>
+</header>
+
+
+<div class="widgets">
+<widget class="widget-wrapper search"><div class="widget-body"><div class="search-wrapper" id="search"><form class="search-form"><input type="text" class="search-input" id="search-input" data-filter="/blog/" placeholder="文章搜索"><svg t="1670596976048" class="icon search-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2676" width="200" height="200"><path d="M938.2 832.6L723.8 618.1c-2.5-2.5-5.3-4.4-7.9-6.4 36.2-55.6 57.3-121.8 57.3-193.1C773.3 222.8 614.6 64 418.7 64S64 222.8 64 418.6c0 195.9 158.8 354.6 354.6 354.6 71.3 0 137.5-21.2 193.2-57.4 2 2.7 3.9 5.4 6.3 7.8L832.5 938c14.6 14.6 33.7 21.9 52.8 21.9 19.1 0 38.2-7.3 52.8-21.8 29.2-29.1 29.2-76.4 0.1-105.5M418.7 661.3C284.9 661.3 176 552.4 176 418.6 176 284.9 284.9 176 418.7 176c133.8 0 242.6 108.9 242.6 242.7 0 133.7-108.9 242.6-242.6 242.6" p-id="2677"></path></svg></form><div id="search-result"></div><div class="search-no-result">没有找到内容！</div></div></div></widget>
+
+
+<widget class="widget-wrapper toc single" id="data-toc"><div class="widget-header cap dis-select"><span class="name">java集成华为推送</span></div><div class="widget-body fs14"><div class="doc-tree active"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E6%AD%A5-%E5%BA%94%E7%94%A8%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%8E%B7%E5%8F%96AccessToken"><span class="toc-text">第一步 应用服务器获取AccessToken</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E6%AD%A5-%E5%BA%94%E7%94%A8%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%8F%91%E9%80%81PUSH%E6%B6%88%E6%81%AF"><span class="toc-text">第二步 应用服务器发送PUSH消息</span></a></li></ol></div></div></widget>
+
+
+
+
+</div>
+
+
+    </aside>
+    <div class='l_main'>
+      
+
+      
+
+
+
+<div class="bread-nav fs12"><div id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a><span class="sep"></span><a class="cap breadcrumb" href="/">文章</a></div><div id="post-meta">发布于&nbsp;<time datetime="2023-06-03T08:11:05.884Z">2023-06-03</time></div></div>
+
+<article class='md-text content post'>
+<h1 class="article-title"><span>java集成华为推送</span></h1>
+<h1 id="集成华为推送"><a href="#集成华为推送" class="headerlink" title="集成华为推送"></a>集成华为推送</h1><p>这类推送一般官方文档都比较详细，如果想要更加详细的了解建议查看官方文档。</p>
+<p>官方文档地址：<a target="_blank" rel="noopener" href="https://developer.huawei.com/consumer/cn/service/hms/pushservice.html">https://developer.huawei.com/consumer/cn/service/hms/pushservice.html</a></p>
+<p>华为推送服务在开发前需要些准备 1.注册认证成为开发者</p>
+<p>2.配置应用签名</p>
+<p>3.创建产品和应用</p>
+<p>4.开通推送服务</p>
+<p>这些步骤按照官方文档一步步来就行，我这边是直接拿到了开发所需要的APPID，APP SECRET，PACKAGE NAME</p>
+<p>注册和准备工作完成后就可以开始进行后台的代码编写了</p>
+<h3 id="第一步-应用服务器获取AccessToken"><a href="#第一步-应用服务器获取AccessToken" class="headerlink" title="第一步 应用服务器获取AccessToken"></a>第一步 应用服务器获取AccessToken</h3><p>想要访问华为的服务接口必须需要一个Token，我们第一步就是获取这个Token。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="type">String</span> <span class="variable">appSecret</span> <span class="operator">=</span> <span class="string">&quot;appSecret&quot;</span>;<span class="comment">//用户在华为开发者联盟申请Push服务获取的服务参数</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span>  <span class="type">String</span> <span class="variable">appId</span> <span class="operator">=</span> <span class="string">&quot;12345678&quot;</span>;<span class="comment">//用户在华为开发者联盟申请Push服务获取的服务参数</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span>  <span class="type">String</span> <span class="variable">tokenUrl</span> <span class="operator">=</span> <span class="string">&quot;https://login.cloud.huawei.com/oauth2/v2/token&quot;</span>; <span class="comment">//获取认证Token的URL</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span>  <span class="type">String</span> <span class="variable">apiUrl</span> <span class="operator">=</span> <span class="string">&quot;https://api.push.hicloud.com/pushsend.do&quot;</span>; <span class="comment">//应用级消息下发API</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span>  String accessToken;<span class="comment">//下发通知消息的认证Token</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span>  <span class="type">long</span> tokenExpiredTime;  <span class="comment">//accessToken的过期时间</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>首先定义好需要的参数，在实际开发中这些参数可以存放在数据库，也可以存放在配置文件中，看个人需求。</p>
+<p>接下来就是获取Token</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">refreshToken</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="type">String</span> <span class="variable">msgBody</span> <span class="operator">=</span> MessageFormat.format(<span class="string">&quot;grant_type=client_credentials&amp;client_secret=&#123;0&#125;&amp;client_id=&#123;1&#125;&quot;</span>, URLEncoder.encode(appSecret, <span class="string">&quot;UTF-8&quot;</span>), appId);</span><br><span class="line">            <span class="type">String</span> <span class="variable">response</span> <span class="operator">=</span> HttpUtil.post(tokenUrl, msgBody);</span><br><span class="line">            <span class="type">JSONObject</span> <span class="variable">obj</span> <span class="operator">=</span> JSONObject.parseObject(response);</span><br><span class="line">            accessToken = obj.getString(“access_token”);</span><br><span class="line">            tokenExpiredTime = System.currentTimeMillis()+（obj.getLong(“expires_in”)-<span class="number">5</span> * <span class="number">60</span>)*<span class="number">1000</span>;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            LOGGER.error(<span class="string">&quot;HvPush -- &gt;&gt; 认证Token获取失败！原因：e = &#123;&#125;&quot;</span>, ExceptionUtil.getMessage(e));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>获取到了访问Token我们就可以开始推送代码的编写了。</p>
+<h3 id="第二步-应用服务器发送PUSH消息"><a href="#第二步-应用服务器发送PUSH消息" class="headerlink" title="第二步 应用服务器发送PUSH消息"></a>第二步 应用服务器发送PUSH消息</h3><p>通过前面的代码我们获取到了AccessToken,Token的存放按照不同的需求可以放在redis或者数据库。</p>
+<p>在发送消息之前首先先验证AccessToken是否已经过期</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(tokenExpiredTime &lt;=System.currentTimeMillis())</span><br><span class="line">    &#123;</span><br><span class="line">        refreshToken();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>接下来进行消息体的封装</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">   <span class="comment">// 封装推送消息body，用于显示通知栏消息显示的标题和内容</span></span><br><span class="line">   <span class="type">JSONObject</span> <span class="variable">body</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">JSONObject</span>();<span class="comment">//仅通知栏消息需要设置标题和内容，透传消息key和value为用户自定义</span></span><br><span class="line">   body.put(<span class="string">&quot;title&quot;</span>,<span class="string">&quot;Push message title&quot;</span>);<span class="comment">//消息标题</span></span><br><span class="line">   body.put(<span class="string">&quot;content&quot;</span>,<span class="string">&quot;Push message content&quot;</span>);<span class="comment">//消息内容体</span></span><br><span class="line"></span><br><span class="line">   <span class="comment">// 封装消息点击动作的参数，“com.huawei.hms.hmsdemo”为推送消息中需要打开的应用APK包名。请根据实际包名来修改。</span></span><br><span class="line">   <span class="type">JSONObject</span> <span class="variable">param</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">JSONObject</span>(); </span><br><span class="line">   param.put(<span class="string">&quot;appPkgName&quot;</span>,<span class="string">&quot;com.huawei.hms.hmsdemo&quot;</span>);<span class="comment">//定义需要打开的appPkgName，这个参数在推送服务管理页面可以看到</span></span><br><span class="line"></span><br><span class="line">   <span class="comment">// 封装消息点击动作，用于定义通知栏点击行为</span></span><br><span class="line">   <span class="type">JSONObject</span> <span class="variable">action</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">JSONObject</span>();</span><br><span class="line">   action.put(<span class="string">&quot;type&quot;</span>,<span class="number">3</span>);<span class="comment">//类型3为打开APP，其他行为请参考接口文档设置</span></span><br><span class="line">   action.put(<span class="string">&quot;param&quot;</span>,param);<span class="comment">//消息点击动作参数</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// type为1时可以自定义行为，自定义行为需要app开发者事先给号参数</span></span><br><span class="line"><span class="comment">// param.put(&quot;intent&quot;, &quot;自定义行为，动作需要app开发者编辑好给你&quot;);</span></span><br><span class="line"></span><br><span class="line">   <span class="comment">// 封装消息类型，用于定义消息类型，区分是通知栏消息还是透传消息。</span></span><br><span class="line">   <span class="type">JSONObject</span> <span class="variable">msg</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">JSONObject</span>();</span><br><span class="line">   msg.put(<span class="string">&quot;type&quot;</span>,<span class="number">3</span>);<span class="comment">//3: 通知栏消息，异步透传消息请根据接口文档设置</span></span><br><span class="line">   msg.put(<span class="string">&quot;action&quot;</span>,action);<span class="comment">//消息点击动作</span></span><br><span class="line">   msg.put(<span class="string">&quot;body&quot;</span>,body);<span class="comment">//通知栏消息body内容示例代码</span></span><br><span class="line"></span><br><span class="line">   <span class="comment">// 封装扩展消息，扩展消息中可以设置biTag用于消息打点，也可以携带customize参数用于触发通知栏点击事件的onEvent回调。</span></span><br><span class="line">   <span class="type">JSONObject</span> <span class="variable">ext</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">JSONObject</span>();<span class="comment">//扩展信息，含BI消息统计，特定展示风格，消息折叠。</span></span><br><span class="line">   ext.put(<span class="string">&quot;biTag&quot;</span>,<span class="string">&quot;Trump&quot;</span>);<span class="comment">//设置消息标签，如果带了这个标签，会在回执中推送给CP用于检测某种类型消息的到达率和状态</span></span><br><span class="line">   <span class="type">JSONObject</span> <span class="variable">temp</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">JSONObject</span>();</span><br><span class="line">   temp.put(<span class="string">&quot;season&quot;</span>,<span class="string">&quot;Spring&quot;</span>);</span><br><span class="line">   temp.put(<span class="string">&quot;weather&quot;</span>,<span class="string">&quot;raining&quot;</span>);</span><br><span class="line">   <span class="type">JSONArray</span> <span class="variable">customize</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">JSONArray</span>();</span><br><span class="line">   customize.add(temp);</span><br><span class="line">   ext.put(<span class="string">&quot;customize&quot;</span>,customize);</span><br><span class="line">   <span class="comment">// ext扩展信息这个参数我并没理解到到底是干嘛的 ，在实际的开发中我只使用了ext.put(&quot;biTag&quot;, &quot;Trump&quot;); 并没有进行customize参数的携带</span></span><br><span class="line"></span><br><span class="line">   <span class="comment">// 最后将以上信息全部封装整个消息体</span></span><br><span class="line">   <span class="type">JSONObject</span> <span class="variable">hps</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">JSONObject</span>();<span class="comment">//华为PUSH消息总结构体</span></span><br><span class="line">   hps.put(<span class="string">&quot;msg&quot;</span>,msg);</span><br><span class="line">   hps.put(<span class="string">&quot;ext&quot;</span>,ext);</span><br><span class="line">   <span class="type">JSONObject</span> <span class="variable">payload</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">JSONObject</span>();</span><br><span class="line">   payload.put(<span class="string">&quot;hps&quot;</span>,hps);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>消息体参数详细文档地址：<a target="_blank" rel="noopener" href="https://developer.huawei.com/consumer/cn/service/hms/catalog/huaweipush_agent.html?page=hmssdk_huaweipush_api_reference_agent_s2">https://developer.huawei.com/consumer/cn/service/hms/catalog/huaweipush_agent.html?page&#x3D;hmssdk_huaweipush_api_reference_agent_s2</a></p>
+<p>消息体封装完成后就可以开始发送推送消息了。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">	<span class="comment">// 创建一个数组json用于存放需要推送的设备id，一般是由前段传过来，或者数据库查询出来</span></span><br><span class="line">	<span class="type">JSONArray</span> <span class="variable">deviceTokens</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">JSONArray</span>();<span class="comment">//目标设备Token</span></span><br><span class="line">        deviceTokens.add(regId);</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 封装整个http消息并发送</span></span><br><span class="line">	<span class="type">String</span> <span class="variable">postBody</span> <span class="operator">=</span> MessageFormat.format(</span><br><span class="line">         <span class="string">&quot;access_token=&#123;0&#125;&amp;nsp_svc=&#123;1&#125;&amp;nsp_ts=&#123;2&#125;&amp;device_token_list=&#123;3&#125;&amp;payload=&#123;4&#125;&quot;</span>,</span><br><span class="line">            URLEncoder.encode(accessToken,<span class="string">&quot;UTF-8&quot;</span>),</span><br><span class="line">            URLEncoder.encode(<span class="string">&quot;openpush.message.api.send&quot;</span>,<span class="string">&quot;UTF-8&quot;</span>),</span><br><span class="line">            URLEncoder.encode(String.valueOf(System.currentTimeMillis() / <span class="number">1000</span>),<span class="string">&quot;UTF-8&quot;</span>),</span><br><span class="line">            URLEncoder.encode(deviceTokens.toString(),<span class="string">&quot;UTF-8&quot;</span>),</span><br><span class="line">            URLEncoder.encode(payload.toString(),<span class="string">&quot;UTF-8&quot;</span>));</span><br><span class="line"></span><br><span class="line"><span class="type">String</span> <span class="variable">postUrl</span> <span class="operator">=</span> apiUrl + <span class="string">&quot;?nsp_ctx=&quot;</span> + URLEncoder.encode(<span class="string">&quot;&#123;\&quot;ver\&quot;:\&quot;1\&quot;, \&quot;appId\&quot;:\&quot;&quot;</span> + appId + <span class="string">&quot;\&quot;&#125;&quot;</span>, <span class="string">&quot;UTF-8&quot;</span>);</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 发送消息 这里我用的是hutool的HttpUtil工具类发的post请求</span></span><br><span class="line">        <span class="type">String</span> <span class="variable">post</span> <span class="operator">=</span> HttpUtil.post(postUrl, postBody);</span><br><span class="line">        LOGGER.info(<span class="string">&quot;华为推送 -- &gt;&gt; 返回结果：&quot;</span> + post);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>到此推送完成，返回结果与错误代码对应文档地址：<a target="_blank" rel="noopener" href="https://developer.huawei.com/consumer/cn/service/hms/catalog/huaweipush_agent.html?page=hmssdk_huaweipush_api_reference_agent_s2">https://developer.huawei.com/consumer/cn/service/hms/catalog/huaweipush_agent.html?page&#x3D;hmssdk_huaweipush_api_reference_agent_s2</a></p>
+
+
+
+<div class="article-footer reveal fs14"><section id="license"><div class="header"><span>许可协议</span></div><div class="body"><p>本文采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">署名-非商业性使用-相同方式共享 4.0 国际</a> 许可协议，转载请注明出处。</p>
+</div></section></div>
+
+</article>
+
+<div class="related-wrap reveal" id="read-next"><section class="body"><div class="item" id="prev"><div class="note">较新文章</div><a href="/2023/06/03/java%E9%9B%86%E6%88%90%E5%B0%8F%E7%B1%B3%E6%8E%A8%E9%80%81%E6%9C%8D%E5%8A%A1/">java集成小米推送服务</a></div><div class="item" id="next"><div class="note">较早文章</div><a href="/2023/06/03/ftps%E4%B8%8A%E4%BC%A0%E9%81%87%E5%88%B0%E5%88%B0%E7%9A%84%E4%B8%80%E4%BA%9B%E5%9D%91/">ftps上传遇到到的一些坑</a></div></section></div>
+
+
+
+
+
+
+
+
+      
+<footer class="page-footer reveal fs12"><hr><div class="text"><p>本站由 <a href="/">@binvv</a> 使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar">Stellar</a> 主题创建。<br>本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议，转载请注明出处。</p>
+</div></footer>
+
+      <div class='float-panel mobile-only blur' style='display:none'>
+  <button type='button' class='sidebar-toggle mobile' onclick='sidebar.toggle()'>
+    <svg class="icon" style="width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="15301"><path d="M566.407 808.3c26.9-0.1 49.3-20.8 51.6-47.6-1.9-27.7-23.9-49.7-51.6-51.6h-412.6c-28.2-1.4-52.6 19.5-55.5 47.6 2.3 26.8 24.6 47.5 51.6 47.6h416.5v4z m309.3-249.9c26.9-0.1 49.3-20.8 51.6-47.6-2.2-26.8-24.6-47.5-51.6-47.6h-721.9c-27.7-2.8-52.5 17.4-55.3 45.1-0.1 0.8-0.1 1.7-0.2 2.5 0.9 27.2 23.6 48.5 50.7 47.6H875.707z m-103.1-245.9c26.9-0.1 49.3-20.8 51.6-47.6-0.4-28.3-23.2-51.1-51.5-51.6h-618.9c-29.5-1.1-54.3 21.9-55.5 51.4v0.2c1.4 27.8 25.2 49.2 53 47.8 0.8 0 1.7-0.1 2.5-0.2h618.8z" p-id="15302"></path><path d="M566.407 808.3c26.9-0.1 49.3-20.8 51.6-47.6-1.9-27.7-23.9-49.7-51.6-51.6h-412.6c-28.2-1.4-52.6 19.5-55.5 47.6 1.9 27.7 23.9 49.7 51.6 51.6h416.5z m309.3-249.9c26.9-0.1 49.3-20.8 51.6-47.6-2.2-26.8-24.6-47.5-51.6-47.6h-721.9c-27.7-2.8-52.5 17.4-55.3 45.1-0.1 0.8-0.1 1.7-0.2 2.5 0.9 27.2 23.6 48.5 50.7 47.6H875.707z m-103.1-245.9c26.9-0.1 49.3-20.8 51.6-47.6-0.4-28.3-23.2-51.1-51.5-51.6h-618.9c-29.5-1.1-54.3 21.9-55.5 51.4v0.2c1.4 27.8 25.2 49.2 53 47.8 0.8 0 1.7-0.1 2.5-0.2h618.8z" p-id="15303"></path></svg>
+  </button>
+</div>
+
+    </div>
+  </div>
+  <div class='scripts'>
+    <script type="text/javascript">
+  const stellar = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    loadCSS: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    // 从 butterfly 和 volantis 获得灵感
+    loadScript: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      if (src.startsWith('/')){
+        src = stellar.config.root + src.substring(1);
+      }
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    // https://github.com/jerryc127/hexo-theme-butterfly
+    jQuery: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        stellar.loadScript(stellar.plugins.jQuery).then(fn)
+      } else {
+        fn()
+      }
+    }
+  };
+  stellar.version = '1.19.0';
+  stellar.github = 'https://github.com/xaoxuu/hexo-theme-stellar/tree/1.19.0';
+  stellar.config = {
+    date_suffix: {
+      just: '刚刚',
+      min: '分钟前',
+      hour: '小时前',
+      day: '天前',
+      month: '个月前',
+    },
+    root : '/',
+  };
+
+  // required plugins (only load if needs)
+  stellar.plugins = {
+    jQuery: 'https://gcore.jsdelivr.net/npm/jquery@3.6.2/dist/jquery.min.js'
+  };
+
+  if ('local_search') {
+    stellar.search = {};
+    stellar.search.service = 'local_search';
+    if (stellar.search.service == 'local_search') {
+      let service_obj = Object.assign({}, {"field":"all","path":"/search.json","content":true,"sort":"-date"});
+      stellar.search[stellar.search.service] = service_obj;
+    }
+  }
+
+  // stellar js
+  stellar.plugins.stellar = Object.assign({"sites":"/js/plugins/sites.js","friends":"/js/plugins/friends.js","ghinfo":"/js/plugins/ghinfo.js","timeline":"/js/plugins/timeline.js","linkcard":"/js/plugins/linkcard.js","fcircle":"/js/plugins/fcircle.js","weibo":"/js/plugins/weibo.js"});
+
+  stellar.plugins.marked = Object.assign("https://cdn.bootcdn.net/ajax/libs/marked/4.0.18/marked.min.js");
+  // optional plugins
+  if ('true' == 'true') {
+    stellar.plugins.lazyload = Object.assign({"enable":true,"js":"https://gcore.jsdelivr.net/npm/vanilla-lazyload@17.8.3/dist/lazyload.min.js","transition":"blur"});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.swiper = Object.assign({"enable":true,"css":"https://unpkg.com/swiper@8.4.5/swiper-bundle.min.css","js":"https://unpkg.com/swiper@8.4.5/swiper-bundle.min.js"});
+  }
+  if ('' == 'true') {
+    stellar.plugins.scrollreveal = Object.assign({"enable":null,"js":"https://gcore.jsdelivr.net/npm/scrollreveal@4.0.9/dist/scrollreveal.min.js","distance":"8px","duration":500,"interval":100,"scale":1});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.preload = Object.assign({"enable":true,"service":"flying_pages","instant_page":"https://gcore.jsdelivr.net/gh/volantis-x/cdn-volantis@4.1.2/js/instant_page.js","flying_pages":"https://gcore.jsdelivr.net/gh/gijo-varghese/flying-pages@2.1.2/flying-pages.min.js"});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.fancybox = Object.assign({"enable":true,"js":"https://gcore.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js","css":"https://gcore.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.css","selector":".swiper-slide img"});
+  }
+  if ('false' == 'true') {
+    stellar.plugins.heti = Object.assign({"enable":false,"css":"https://unpkg.com/heti@0.9.2/umd/heti.min.css","js":"https://unpkg.com/heti@0.9.2/umd/heti-addon.min.js"});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.copycode = Object.assign({"enable":true,"js":"/js/plugins/copycode.js","default_text":"Copy","success_text":"Copied"});
+  }
+</script>
+
+<!-- required -->
+
+  
+<script src="/js/main.js" async></script>
+
+
+
+<!-- optional -->
+
+
+
+<!-- inject -->
+
+
+  </div>
+</body>
+</html>
