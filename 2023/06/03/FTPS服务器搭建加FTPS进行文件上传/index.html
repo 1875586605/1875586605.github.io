@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang='zh-CN'>
+
+<head>
+  <meta name="generator" content="Hexo 6.3.0">
+  <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.19.0">
+  <meta charset="utf-8">
+  
+
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  <link rel='dns-prefetch' href='https://gcore.jsdelivr.net'>
+  <link rel="preconnect" href="https://gcore.jsdelivr.net" crossorigin>
+  <link rel='dns-prefetch' href='//unpkg.com'>
+
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" content="#f8f8f8">
+  
+  <title>FTPS服务器搭建加FTPS进行文件上传 - 彬的博客</title>
+
+  
+    <meta name="description" content="搭建FTPS服务器获取vsftpd最新的docker镜像1docker pull fauria&#x2F;vsftpd  启动镜像123456789docker run -d -p 21:21 -p 20:20 -p 21100-21110:21100-21110 \-v &#x2F;home&#x2F;dispatch&#x2F;test&#x2F;root:&#x2F;home&#x2F;vsftpd&#x2F;test \-e FTP_USER&#x3D;test \-e FTP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="FTPS服务器搭建加FTPS进行文件上传">
+<meta property="og:url" content="http://binvv.com/2023/06/03/FTPS%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%90%AD%E5%BB%BA%E5%8A%A0FTPS%E8%BF%9B%E8%A1%8C%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/index.html">
+<meta property="og:site_name" content="彬的博客">
+<meta property="og:description" content="搭建FTPS服务器获取vsftpd最新的docker镜像1docker pull fauria&#x2F;vsftpd  启动镜像123456789docker run -d -p 21:21 -p 20:20 -p 21100-21110:21100-21110 \-v &#x2F;home&#x2F;dispatch&#x2F;test&#x2F;root:&#x2F;home&#x2F;vsftpd&#x2F;test \-e FTP_USER&#x3D;test \-e FTP">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://oscimg.oschina.net/oscnet/up-66b8910c7f2f5704da2a38bd465ff0b7f40.png">
+<meta property="og:image" content="https://oscimg.oschina.net/oscnet/up-0fac35fbcd83284d320d9848c88859541e9.png">
+<meta property="og:image" content="https://oscimg.oschina.net/oscnet/up-49f96c122b82062e3bee0e913138c9baf1f.png">
+<meta property="og:image" content="https://oscimg.oschina.net/oscnet/up-2fae09c2c7178902e06ff64be1e08c70fd8.png">
+<meta property="og:image" content="https://oscimg.oschina.net/oscnet/up-e9feebf87cbce10e4eb2ec3733b0be5f74c.png">
+<meta property="og:image" content="https://oscimg.oschina.net/oscnet/up-cf0b6b62da7cbe8e7d9ddd26343245a666e.png">
+<meta property="article:published_time" content="2023-06-03T09:44:00.000Z">
+<meta property="article:modified_time" content="2023-06-03T09:44:15.271Z">
+<meta property="article:author" content="彬">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://oscimg.oschina.net/oscnet/up-66b8910c7f2f5704da2a38bd465ff0b7f40.png">
+  
+  
+  
+  
+
+  <!-- feed -->
+  
+
+  
+    
+<link rel="stylesheet" href="/css/main.css">
+
+  
+
+  
+
+  
+
+  
+
+
+  
+</head>
+
+<body>
+  
+
+
+
+
+  <div class='l_body' id='start'>
+    <aside class='l_left' layout='post'>
+    
+
+  
+
+<header class="header"><div class="logo-wrap"><a class="title" href="/"><div class="main" ff="title">彬的博客</div><div class="sub normal cap">苦逼的程序员</div><div class="sub hover cap" style="opacity:0"> 996加班中</div></a></div>
+
+<nav class="menu dis-select"></nav>
+</header>
+
+
+<div class="widgets">
+<widget class="widget-wrapper search"><div class="widget-body"><div class="search-wrapper" id="search"><form class="search-form"><input type="text" class="search-input" id="search-input" data-filter="/blog/" placeholder="文章搜索"><svg t="1670596976048" class="icon search-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2676" width="200" height="200"><path d="M938.2 832.6L723.8 618.1c-2.5-2.5-5.3-4.4-7.9-6.4 36.2-55.6 57.3-121.8 57.3-193.1C773.3 222.8 614.6 64 418.7 64S64 222.8 64 418.6c0 195.9 158.8 354.6 354.6 354.6 71.3 0 137.5-21.2 193.2-57.4 2 2.7 3.9 5.4 6.3 7.8L832.5 938c14.6 14.6 33.7 21.9 52.8 21.9 19.1 0 38.2-7.3 52.8-21.8 29.2-29.1 29.2-76.4 0.1-105.5M418.7 661.3C284.9 661.3 176 552.4 176 418.6 176 284.9 284.9 176 418.7 176c133.8 0 242.6 108.9 242.6 242.7 0 133.7-108.9 242.6-242.6 242.6" p-id="2677"></path></svg></form><div id="search-result"></div><div class="search-no-result">没有找到内容！</div></div></div></widget>
+
+
+<widget class="widget-wrapper toc single" id="data-toc"><div class="widget-header cap dis-select"><span class="name">FTPS服务器搭建加FTPS进行文件上传</span></div><div class="widget-body fs14"><div class="doc-tree active"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%8E%B7%E5%8F%96vsftpd%E6%9C%80%E6%96%B0%E7%9A%84docker%E9%95%9C%E5%83%8F"><span class="toc-text">获取vsftpd最新的docker镜像</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%AF%E5%8A%A8%E9%95%9C%E5%83%8F"><span class="toc-text">启动镜像</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%9F%E6%88%90SSl%E8%AF%81%E4%B9%A6%E6%96%87%E4%BB%B6"><span class="toc-text">生成SSl证书文件</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%9B%E8%A1%8CFTPS%E7%9A%84%E9%85%8D%E7%BD%AE"><span class="toc-text">进行FTPS的配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B7%A5%E5%85%B7%E8%BF%9E%E6%8E%A5%E6%B5%8B%E8%AF%95"><span class="toc-text">工具连接测试</span></a></li></ol></div></div></widget>
+
+
+
+
+</div>
+
+
+    </aside>
+    <div class='l_main'>
+      
+
+      
+
+
+
+<div class="bread-nav fs12"><div id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a><span class="sep"></span><a class="cap breadcrumb" href="/">文章</a></div><div id="post-meta">发布于&nbsp;<time datetime="2023-06-03T09:44:00.000Z">2023-06-03</time></div></div>
+
+<article class='md-text content post'>
+<h1 class="article-title"><span>FTPS服务器搭建加FTPS进行文件上传</span></h1>
+<h1 id="搭建FTPS服务器"><a href="#搭建FTPS服务器" class="headerlink" title="搭建FTPS服务器"></a>搭建FTPS服务器</h1><h2 id="获取vsftpd最新的docker镜像"><a href="#获取vsftpd最新的docker镜像" class="headerlink" title="获取vsftpd最新的docker镜像"></a>获取vsftpd最新的docker镜像</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull fauria/vsftpd</span><br></pre></td></tr></table></figure>
+
+<h2 id="启动镜像"><a href="#启动镜像" class="headerlink" title="启动镜像"></a>启动镜像</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">docker run -d -p 21:21 -p 20:20 -p 21100-21110:21100-21110 \</span><br><span class="line">-v /home/dispatch/test/root:/home/vsftpd/test \</span><br><span class="line">-e FTP_USER=test \</span><br><span class="line">-e FTP_PASS=test \</span><br><span class="line">-e PASV_ADDRESS=服务器对外ip \</span><br><span class="line">-e PASV_MIN_PORT=21100 \</span><br><span class="line">-e PASV_MAX_PORT=21110 \</span><br><span class="line">--name vsftpd \</span><br><span class="line">--restart=always fauria/vsftpd</span><br></pre></td></tr></table></figure>
+
+<p>注意启动挂在文件目录时最下面一层是和用户名一致的</p>
+<h3 id="生成SSl证书文件"><a href="#生成SSl证书文件" class="headerlink" title="生成SSl证书文件"></a>生成SSl证书文件</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">检查是否安装证书生成工具openssl</span></span><br><span class="line">rpm -qa | grep openssl</span><br></pre></td></tr></table></figure>
+<div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://oscimg.oschina.net/oscnet/up-66b8910c7f2f5704da2a38bd465ff0b7f40.png"/></div></div>
+
+<p>没有安装的安装一下</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install mod_ssl openssl</span><br></pre></td></tr></table></figure>
+
+<p>生成SSL证书文件</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">OpenSSL指令注释:</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">req 			<span class="comment">#是 X.509 Certificate Signing Request （CSR，证书签名请求）管理的一個命令。</span></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">x509 			<span class="comment">#X.509 证书资料管理。</span></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">days 			<span class="comment">#定义证书的有效日期。</span></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">newkey 		<span class="comment">#指定证书秘钥处理器。</span></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">keyout 		<span class="comment">#設定秘钥存储文件。</span></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">out 			<span class="comment">#設定证书存储文件，注意证书和秘钥都储存在一個相同的文件</span></span></span><br><span class="line">openssl req -new -x509 -nodes -out vsftpd.pem -keyout vsftpd.pem -days 3560</span><br><span class="line">Generating a 2048 bit RSA private key</span><br></pre></td></tr></table></figure>
+
+<div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://oscimg.oschina.net/oscnet/up-0fac35fbcd83284d320d9848c88859541e9.png"/></div></div>
+
+<p>需要填写所在国家,城市之类的,看着填就行</p>
+<h2 id="进行FTPS的配置"><a href="#进行FTPS的配置" class="headerlink" title="进行FTPS的配置"></a>进行FTPS的配置</h2><p>由于我这边是安装到docker中的,所以需要将秘钥文件移动到容器中</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker cp ./vsftpd.pem &#123;容器id&#125;:/etc/vspdfd/</span><br></pre></td></tr></table></figure>
+
+<p>进入容器到配置目录下</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">进入容器</span></span><br><span class="line">docker exec -it &#123;容器id&#125; /bin/bash</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">进入配置目录</span></span><br><span class="line"> cd /etc/vsftpd/</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">编辑配置文件</span></span><br><span class="line">vi vsftpd.conf</span><br></pre></td></tr></table></figure>
+
+<div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://oscimg.oschina.net/oscnet/up-49f96c122b82062e3bee0e913138c9baf1f.png"/></div></div>
+
+<p>添加配置</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">rsa_cert_file=/etc/vsftpd/vsftpd.pem</span><br><span class="line">rsa_private_key_file=/etc/vsftpd/vsftpd.pem</span><br><span class="line">ssl_enable=YES</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">不重用SSL会话，安全配置项(不配置会导致代码连接失败)</span></span><br><span class="line">require_ssl_reuse=NO</span><br></pre></td></tr></table></figure>
+
+<p>配置最好是放在配置文件最上方,不然可能导致启动失败,循环重启</p>
+<p>退出容器并且重启</p>
+<h2 id="工具连接测试"><a href="#工具连接测试" class="headerlink" title="工具连接测试"></a>工具连接测试</h2><p>这里我使用的工具是cuteFTP</p>
+<div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://oscimg.oschina.net/oscnet/up-2fae09c2c7178902e06ff64be1e08c70fd8.png"/></div></div>
+
+<div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://oscimg.oschina.net/oscnet/up-e9feebf87cbce10e4eb2ec3733b0be5f74c.png"/></div></div>
+
+<div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://oscimg.oschina.net/oscnet/up-cf0b6b62da7cbe8e7d9ddd26343245a666e.png"/></div></div>
+
+<p>成功连接</p>
+<h1 id="java代码FTPS文件上传工具"><a href="#java代码FTPS文件上传工具" class="headerlink" title="java代码FTPS文件上传工具"></a>java代码FTPS文件上传工具</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> cn.hutool.core.io.IORuntimeException;</span><br><span class="line"><span class="keyword">import</span> cn.hutool.core.util.ObjectUtil;</span><br><span class="line"><span class="keyword">import</span> cn.hutool.core.util.StrUtil;</span><br><span class="line"><span class="keyword">import</span> cn.hutool.extra.ftp.Ftp;</span><br><span class="line"><span class="keyword">import</span> cn.hutool.extra.ftp.FtpException;</span><br><span class="line"><span class="keyword">import</span> lombok.extern.slf4j.Slf4j;</span><br><span class="line"><span class="keyword">import</span> org.apache.commons.net.ftp.FTP;</span><br><span class="line"><span class="keyword">import</span> org.apache.commons.net.ftp.FTPClient;</span><br><span class="line"><span class="keyword">import</span> org.apache.commons.net.ftp.FTPReply;</span><br><span class="line"><span class="keyword">import</span> org.apache.commons.net.ftp.FTPSClient;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.File;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.io.InputStream;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> cjb</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2022-04-08 14:15</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span> ftp 文件上传工具</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Slf4j</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">FtpUtil</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** 本地字符编码 */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="type">String</span> <span class="variable">LOCAL_CHARSET</span> <span class="operator">=</span> <span class="string">&quot;GBK&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// FTP协议文件名编码为iso-8859-1</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="type">String</span> <span class="variable">SERVER_CHARSET</span> <span class="operator">=</span> <span class="string">&quot;ISO-8859-1&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 操作完成后是否返回原目录</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="type">boolean</span> <span class="variable">backToPwd</span> <span class="operator">=</span> <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 创建ftps连接对象</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> host</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> port</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> user</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> password</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> FTPSClient <span class="title function_">createFTPSConnection</span><span class="params">(String host, <span class="type">int</span> port, String user, String password)</span>&#123;</span><br><span class="line">        <span class="type">FTPSClient</span> <span class="variable">ftpsClient</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">FTPSClient</span>();</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            ftpsClient.connect(host, port);</span><br><span class="line">            <span class="comment">//FTP的用户名和密码</span></span><br><span class="line">            ftpsClient.login(user,password);</span><br><span class="line">            <span class="comment">// 开启服务器对UTF-8的支持，如果服务器支持就用UTF-8编码，否则就使用本地编码（GBK）.</span></span><br><span class="line"><span class="comment">//        if (FTPReply.isPositiveCompletion(ftpsClient.sendCommand(</span></span><br><span class="line"><span class="comment">//                &quot;OPTS UTF8&quot;, &quot;ON&quot;))) &#123;</span></span><br><span class="line"><span class="comment">//            LOCAL_CHARSET = &quot;UTF-8&quot;;</span></span><br><span class="line"><span class="comment">//        &#125;</span></span><br><span class="line">            ftpsClient.setFileType(FTP.BINARY_FILE_TYPE);</span><br><span class="line">            ftpsClient.setControlEncoding(LOCAL_CHARSET);</span><br><span class="line">            ftpsClient.execPBSZ(<span class="number">0</span>);</span><br><span class="line">            ftpsClient.execPROT(<span class="string">&quot;P&quot;</span>);</span><br><span class="line">            ftpsClient.enterLocalPassiveMode();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            log.error(<span class="string">&quot;ftps连接创建失败&quot;</span>);</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ftpsClient;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 上传文件</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> destPath 上传路径</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> fileName 上传文件名称</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> fileStream 文件流</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> client 连接对象</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> IORuntimeException</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="type">boolean</span> <span class="title function_">upload</span><span class="params">(String destPath, String fileName, InputStream fileStream,FTPSClient client)</span> <span class="keyword">throws</span> IORuntimeException &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            client.setFileType(FTPClient.BINARY_FILE_TYPE);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">IORuntimeException</span>(e);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="type">String</span> <span class="variable">pwd</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">        <span class="keyword">if</span> (FtpUtil.backToPwd) &#123;</span><br><span class="line">            pwd = FtpUtil.pwd(client);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (StrUtil.isNotBlank(destPath)) &#123;</span><br><span class="line">            FtpUtil.mkDirs(client,destPath);</span><br><span class="line">            <span class="keyword">if</span> (<span class="literal">false</span> == FtpUtil.isDir(client,destPath)) &#123;</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">FtpException</span>(<span class="string">&quot;Change dir to [&#123;&#125;] error, maybe dir not exist!&quot;</span>, destPath);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> client.storeFile(fileName, fileStream);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">IORuntimeException</span>(e);</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (FtpUtil.backToPwd) &#123;</span><br><span class="line">                FtpUtil.cd(client,pwd);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 进入目录</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> client 连接对象</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> directory 目录</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="type">boolean</span> <span class="title function_">cd</span><span class="params">(FTPSClient client,String directory)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (StrUtil.isBlank(directory)) &#123;</span><br><span class="line">            <span class="comment">// 当前目录</span></span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> client.changeWorkingDirectory(directory);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">IORuntimeException</span>(e);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 创建目录</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> client 连接对象</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> dir 文件路径</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">mkDirs</span><span class="params">(FTPSClient client,String dir)</span> &#123;</span><br><span class="line">        <span class="keyword">final</span> String[] dirs = StrUtil.trim(dir).split(<span class="string">&quot;[\\\\/]+&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">final</span> <span class="type">String</span> <span class="variable">now</span> <span class="operator">=</span> FtpUtil.pwd(client);</span><br><span class="line">        <span class="keyword">if</span> (dirs.length &gt; <span class="number">0</span> &amp;&amp; StrUtil.isEmpty(dirs[<span class="number">0</span>])) &#123;</span><br><span class="line">            <span class="comment">//首位为空，表示以/开头</span></span><br><span class="line">            FtpUtil.cd(client,StrUtil.SLASH);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> (String s : dirs) &#123;</span><br><span class="line">            <span class="keyword">if</span> (StrUtil.isNotEmpty(s)) &#123;</span><br><span class="line">                <span class="type">boolean</span> <span class="variable">exist</span> <span class="operator">=</span> <span class="literal">true</span>;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    <span class="keyword">if</span> (<span class="literal">false</span> == FtpUtil.cd(client,s)) &#123;</span><br><span class="line">                        exist = <span class="literal">false</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125; <span class="keyword">catch</span> (FtpException e) &#123;</span><br><span class="line">                    exist = <span class="literal">false</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span> (<span class="literal">false</span> == exist) &#123;</span><br><span class="line">                    <span class="comment">//目录不存在时创建</span></span><br><span class="line">                    FtpUtil.mkdir(client,s);</span><br><span class="line">                    FtpUtil.cd(client,s);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 切换回工作目录</span></span><br><span class="line">        FtpUtil.cd(client,now);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 创建目录</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> client 连接对象</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> dir 文件夹名称</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> IORuntimeException</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="type">boolean</span> <span class="title function_">mkdir</span><span class="params">(FTPSClient client,String dir)</span> <span class="keyword">throws</span> IORuntimeException &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> client.makeDirectory(dir);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">IORuntimeException</span>(e);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 显示当前目录</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> client 连接对象</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> String <span class="title function_">pwd</span><span class="params">(FTPSClient client)</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> client.printWorkingDirectory();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">IORuntimeException</span>(e);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 判断给定路径是否为目录</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> dir 被判断的路径</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 是否为目录</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@since</span> 5.7.5</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="type">boolean</span> <span class="title function_">isDir</span><span class="params">(FTPSClient client,String dir)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> FtpUtil.cd(client,dir);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<div class="article-footer reveal fs14"><section id="license"><div class="header"><span>许可协议</span></div><div class="body"><p>本文采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">署名-非商业性使用-相同方式共享 4.0 国际</a> 许可协议，转载请注明出处。</p>
+</div></section></div>
+
+</article>
+
+<div class="related-wrap reveal" id="read-next"><section class="body"><div class="item" id="prev"><div class="note">较新文章</div><a href="/2023/06/03/FeignConfig%E8%B0%83%E7%94%A8%E6%90%BA%E5%B8%A6%E6%9C%AC%E6%AC%A1%E8%AF%B7%E6%B1%82%E7%9A%84%E8%AF%B7%E6%B1%82%E5%A4%B4%E4%BF%A1%E6%81%AF/">FeignConfig调用携带本次请求的请求头信息</a></div><div class="item" id="next"><div class="note">较早文章</div><a href="/2023/06/03/%E8%AE%B0%E5%BD%95%E4%BD%BF%E7%94%A8spring-boot%E5%8A%A0mapstruct%E5%87%BA%E7%8E%B0%E7%9A%84%E5%AE%9E%E7%8E%B0%E7%B1%BB%E6%9C%AA%E5%88%9B%E5%BB%BA%E9%97%AE%E9%A2%98/">记录使用spring boot加mapstruct出现的实现类未创建问题</a></div></section></div>
+
+
+
+
+
+
+
+
+      
+<footer class="page-footer reveal fs12"><hr><div class="text"><p>本站由 <a href="/">@binvv</a> 使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar">Stellar</a> 主题创建。<br>本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议，转载请注明出处。</p>
+</div></footer>
+
+      <div class='float-panel mobile-only blur' style='display:none'>
+  <button type='button' class='sidebar-toggle mobile' onclick='sidebar.toggle()'>
+    <svg class="icon" style="width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="15301"><path d="M566.407 808.3c26.9-0.1 49.3-20.8 51.6-47.6-1.9-27.7-23.9-49.7-51.6-51.6h-412.6c-28.2-1.4-52.6 19.5-55.5 47.6 2.3 26.8 24.6 47.5 51.6 47.6h416.5v4z m309.3-249.9c26.9-0.1 49.3-20.8 51.6-47.6-2.2-26.8-24.6-47.5-51.6-47.6h-721.9c-27.7-2.8-52.5 17.4-55.3 45.1-0.1 0.8-0.1 1.7-0.2 2.5 0.9 27.2 23.6 48.5 50.7 47.6H875.707z m-103.1-245.9c26.9-0.1 49.3-20.8 51.6-47.6-0.4-28.3-23.2-51.1-51.5-51.6h-618.9c-29.5-1.1-54.3 21.9-55.5 51.4v0.2c1.4 27.8 25.2 49.2 53 47.8 0.8 0 1.7-0.1 2.5-0.2h618.8z" p-id="15302"></path><path d="M566.407 808.3c26.9-0.1 49.3-20.8 51.6-47.6-1.9-27.7-23.9-49.7-51.6-51.6h-412.6c-28.2-1.4-52.6 19.5-55.5 47.6 1.9 27.7 23.9 49.7 51.6 51.6h416.5z m309.3-249.9c26.9-0.1 49.3-20.8 51.6-47.6-2.2-26.8-24.6-47.5-51.6-47.6h-721.9c-27.7-2.8-52.5 17.4-55.3 45.1-0.1 0.8-0.1 1.7-0.2 2.5 0.9 27.2 23.6 48.5 50.7 47.6H875.707z m-103.1-245.9c26.9-0.1 49.3-20.8 51.6-47.6-0.4-28.3-23.2-51.1-51.5-51.6h-618.9c-29.5-1.1-54.3 21.9-55.5 51.4v0.2c1.4 27.8 25.2 49.2 53 47.8 0.8 0 1.7-0.1 2.5-0.2h618.8z" p-id="15303"></path></svg>
+  </button>
+</div>
+
+    </div>
+  </div>
+  <div class='scripts'>
+    <script type="text/javascript">
+  const stellar = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    loadCSS: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    // 从 butterfly 和 volantis 获得灵感
+    loadScript: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      if (src.startsWith('/')){
+        src = stellar.config.root + src.substring(1);
+      }
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    // https://github.com/jerryc127/hexo-theme-butterfly
+    jQuery: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        stellar.loadScript(stellar.plugins.jQuery).then(fn)
+      } else {
+        fn()
+      }
+    }
+  };
+  stellar.version = '1.19.0';
+  stellar.github = 'https://github.com/xaoxuu/hexo-theme-stellar/tree/1.19.0';
+  stellar.config = {
+    date_suffix: {
+      just: '刚刚',
+      min: '分钟前',
+      hour: '小时前',
+      day: '天前',
+      month: '个月前',
+    },
+    root : '/',
+  };
+
+  // required plugins (only load if needs)
+  stellar.plugins = {
+    jQuery: 'https://gcore.jsdelivr.net/npm/jquery@3.6.2/dist/jquery.min.js'
+  };
+
+  if ('local_search') {
+    stellar.search = {};
+    stellar.search.service = 'local_search';
+    if (stellar.search.service == 'local_search') {
+      let service_obj = Object.assign({}, {"field":"all","path":"/search.json","content":true,"sort":"-date"});
+      stellar.search[stellar.search.service] = service_obj;
+    }
+  }
+
+  // stellar js
+  stellar.plugins.stellar = Object.assign({"sites":"/js/plugins/sites.js","friends":"/js/plugins/friends.js","ghinfo":"/js/plugins/ghinfo.js","timeline":"/js/plugins/timeline.js","linkcard":"/js/plugins/linkcard.js","fcircle":"/js/plugins/fcircle.js","weibo":"/js/plugins/weibo.js"});
+
+  stellar.plugins.marked = Object.assign("https://cdn.bootcdn.net/ajax/libs/marked/4.0.18/marked.min.js");
+  // optional plugins
+  if ('true' == 'true') {
+    stellar.plugins.lazyload = Object.assign({"enable":true,"js":"https://gcore.jsdelivr.net/npm/vanilla-lazyload@17.8.3/dist/lazyload.min.js","transition":"blur"});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.swiper = Object.assign({"enable":true,"css":"https://unpkg.com/swiper@8.4.5/swiper-bundle.min.css","js":"https://unpkg.com/swiper@8.4.5/swiper-bundle.min.js"});
+  }
+  if ('' == 'true') {
+    stellar.plugins.scrollreveal = Object.assign({"enable":null,"js":"https://gcore.jsdelivr.net/npm/scrollreveal@4.0.9/dist/scrollreveal.min.js","distance":"8px","duration":500,"interval":100,"scale":1});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.preload = Object.assign({"enable":true,"service":"flying_pages","instant_page":"https://gcore.jsdelivr.net/gh/volantis-x/cdn-volantis@4.1.2/js/instant_page.js","flying_pages":"https://gcore.jsdelivr.net/gh/gijo-varghese/flying-pages@2.1.2/flying-pages.min.js"});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.fancybox = Object.assign({"enable":true,"js":"https://gcore.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js","css":"https://gcore.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.css","selector":".swiper-slide img"});
+  }
+  if ('false' == 'true') {
+    stellar.plugins.heti = Object.assign({"enable":false,"css":"https://unpkg.com/heti@0.9.2/umd/heti.min.css","js":"https://unpkg.com/heti@0.9.2/umd/heti-addon.min.js"});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.copycode = Object.assign({"enable":true,"js":"/js/plugins/copycode.js","default_text":"Copy","success_text":"Copied"});
+  }
+</script>
+
+<!-- required -->
+
+  
+<script src="/js/main.js" async></script>
+
+
+
+<!-- optional -->
+
+
+
+<!-- inject -->
+
+
+  </div>
+</body>
+</html>

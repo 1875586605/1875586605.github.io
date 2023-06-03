@@ -20,20 +20,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="theme-color" content="#f8f8f8">
   
-  <title>springBoot集成es使用ElasticsearchTemplate执行滚动查询 - 彬的博客</title>
+  <title>kafka查询topic列表,和topic下消息 - 彬的博客</title>
 
   
-    <meta name="description" content="使用Elasticsearch查询大量数据时基本的分页查询就会报错，这种情况下可以使用scroll（滚动）查询 直接上代码： 123456789101112131415161718192021222324252627&#x2F;&#x2F; 创建查询条件对象BoolQueryBuilder queryBuilder &#x3D; QueryBuilders.boolQuery();&#x2F;&#x2F; 拼接查询条件queryBuilder.m">
+    <meta name="description" content="使用Kafka经常碰到需要查看topic是否创建，或是查看topic下的数据。 最开始想直接找可视化工具进行查看就找到了Kafka tool 然后发现链接数据较少的环境确实比较好用，但是如果topic或topic下的数据较多就会直接卡死，导致无法打开。 Kafka tool 的简单使用首先去官网下载 Kafka tool ：https:&#x2F;&#x2F;www.kafkatool.com&#x2F; 无脑下一步进行安装。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="springBoot集成es使用ElasticsearchTemplate执行滚动查询">
-<meta property="og:url" content="http://binvv.com/2023/06/03/springBoot%E9%9B%86%E6%88%90es%E4%BD%BF%E7%94%A8ElasticsearchTemplate%E6%89%A7%E8%A1%8C%E6%BB%9A%E5%8A%A8%E6%9F%A5%E8%AF%A2/index.html">
+<meta property="og:title" content="kafka查询topic列表,和topic下消息">
+<meta property="og:url" content="http://binvv.com/2023/06/03/kafka%E6%9F%A5%E8%AF%A2topic%E5%88%97%E8%A1%A8-%E5%92%8Ctopic%E4%B8%8B%E6%B6%88%E6%81%AF/index.html">
 <meta property="og:site_name" content="彬的博客">
-<meta property="og:description" content="使用Elasticsearch查询大量数据时基本的分页查询就会报错，这种情况下可以使用scroll（滚动）查询 直接上代码： 123456789101112131415161718192021222324252627&#x2F;&#x2F; 创建查询条件对象BoolQueryBuilder queryBuilder &#x3D; QueryBuilders.boolQuery();&#x2F;&#x2F; 拼接查询条件queryBuilder.m">
+<meta property="og:description" content="使用Kafka经常碰到需要查看topic是否创建，或是查看topic下的数据。 最开始想直接找可视化工具进行查看就找到了Kafka tool 然后发现链接数据较少的环境确实比较好用，但是如果topic或topic下的数据较多就会直接卡死，导致无法打开。 Kafka tool 的简单使用首先去官网下载 Kafka tool ：https:&#x2F;&#x2F;www.kafkatool.com&#x2F; 无脑下一步进行安装。">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2023-06-03T08:53:52.000Z">
-<meta property="article:modified_time" content="2023-06-03T08:54:53.476Z">
+<meta property="og:image" content="https://oscimg.oschina.net/oscnet/up-91a1301aedbeecc03163e21e4a271080a50.png">
+<meta property="og:image" content="https://oscimg.oschina.net/oscnet/up-456c58e5bf84095b03231346db2863dfed4.png">
+<meta property="og:image" content="https://oscimg.oschina.net/oscnet/up-10f1e61451c9339c4571214167b6f97c08a.png">
+<meta property="og:image" content="https://oscimg.oschina.net/oscnet/up-1e1348d0802e7720f410da02623591e7d70.png">
+<meta property="article:published_time" content="2023-06-03T09:22:00.000Z">
+<meta property="article:modified_time" content="2023-06-03T09:22:23.464Z">
 <meta property="article:author" content="彬">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://oscimg.oschina.net/oscnet/up-91a1301aedbeecc03163e21e4a271080a50.png">
   
   
   
@@ -80,9 +85,7 @@
 <widget class="widget-wrapper search"><div class="widget-body"><div class="search-wrapper" id="search"><form class="search-form"><input type="text" class="search-input" id="search-input" data-filter="/blog/" placeholder="文章搜索"><svg t="1670596976048" class="icon search-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2676" width="200" height="200"><path d="M938.2 832.6L723.8 618.1c-2.5-2.5-5.3-4.4-7.9-6.4 36.2-55.6 57.3-121.8 57.3-193.1C773.3 222.8 614.6 64 418.7 64S64 222.8 64 418.6c0 195.9 158.8 354.6 354.6 354.6 71.3 0 137.5-21.2 193.2-57.4 2 2.7 3.9 5.4 6.3 7.8L832.5 938c14.6 14.6 33.7 21.9 52.8 21.9 19.1 0 38.2-7.3 52.8-21.8 29.2-29.1 29.2-76.4 0.1-105.5M418.7 661.3C284.9 661.3 176 552.4 176 418.6 176 284.9 284.9 176 418.7 176c133.8 0 242.6 108.9 242.6 242.7 0 133.7-108.9 242.6-242.6 242.6" p-id="2677"></path></svg></form><div id="search-result"></div><div class="search-no-result">没有找到内容！</div></div></div></widget>
 
 
-
-<widget class="widget-wrapper recent"><div class="widget-header cap theme dis-select"><span class="name">最近更新</span></div><div class="widget-body related-posts fs14"><a class="item title" href="/2023/06/03/java%E5%9B%BD%E9%99%85%E5%8C%96%E5%B7%A5%E5%85%B7%E7%B1%BB/"><span class="title">java国际化工具类</span></a><a class="item title" href="/2023/06/03/FeignConfig%E8%B0%83%E7%94%A8%E6%90%BA%E5%B8%A6%E6%9C%AC%E6%AC%A1%E8%AF%B7%E6%B1%82%E7%9A%84%E8%AF%B7%E6%B1%82%E5%A4%B4%E4%BF%A1%E6%81%AF/"><span class="title">FeignConfig调用携带本次请求的请求头信息</span></a><a class="item title" href="/2023/06/03/FTPS%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%90%AD%E5%BB%BA%E5%8A%A0FTPS%E8%BF%9B%E8%A1%8C%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/"><span class="title">FTPS服务器搭建加FTPS进行文件上传</span></a><a class="item title" href="/2023/06/03/%E8%AE%B0%E5%BD%95%E4%BD%BF%E7%94%A8spring-boot%E5%8A%A0mapstruct%E5%87%BA%E7%8E%B0%E7%9A%84%E5%AE%9E%E7%8E%B0%E7%B1%BB%E6%9C%AA%E5%88%9B%E5%BB%BA%E9%97%AE%E9%A2%98/"><span class="title">记录使用spring boot加mapstruct出现的实现类未创建问题</span></a><a class="item title" href="/2023/06/03/%E5%9F%BA%E4%BA%8Espring-boot%E5%8A%A0redis-Stream%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AA%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/"><span class="title">基于spring boot加redis Stream实现一个消息队列</span></a></div></widget>
-
+<widget class="widget-wrapper toc single" id="data-toc"><div class="widget-header cap dis-select"><span class="name">kafka查询topic列表,和topic下消息</span></div><div class="widget-body fs14"><div class="doc-tree active"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Kafka-tool-%E7%9A%84%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8"><span class="toc-text">Kafka tool 的简单使用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8Kafka%E5%91%BD%E4%BB%A4%E8%84%9A%E6%9C%AC%E6%9F%A5%E7%9C%8B"><span class="toc-text">使用Kafka命令脚本查看</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8Bkafka-topic%E5%88%97%E8%A1%A8"><span class="toc-text">查看kafka topic列表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%8E%E5%A4%B4%E5%BC%80%E5%A7%8B%E6%9F%A5%E7%9C%8Bkafka-topic%E4%B8%8B%E7%9A%84%E6%95%B0%E6%8D%AE"><span class="toc-text">从头开始查看kafka topic下的数据</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8C%89%E7%85%A7%E5%81%8F%E7%A7%BB%E9%87%8F%E6%9F%A5%E7%9C%8Btopic%E4%B8%8B%E6%95%B0%E6%8D%AE"><span class="toc-text">按照偏移量查看topic下数据</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B8%85%E9%99%A4Kafka-topic%E4%B8%8B%E6%89%80%E6%9C%89%E6%B6%88%E6%81%AF"><span class="toc-text">清除Kafka topic下所有消息</span></a></li></ol></li></ol></div></div></widget>
 
 
 
@@ -98,13 +101,37 @@
 
 
 
-<div class="bread-nav fs12"><div id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a><span class="sep"></span><a class="cap breadcrumb" href="/">文章</a></div><div id="post-meta">发布于&nbsp;<time datetime="2023-06-03T08:53:52.000Z">2023-06-03</time></div></div>
+<div class="bread-nav fs12"><div id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a><span class="sep"></span><a class="cap breadcrumb" href="/">文章</a></div><div id="post-meta">发布于&nbsp;<time datetime="2023-06-03T09:22:00.000Z">2023-06-03</time></div></div>
 
 <article class='md-text content post'>
-<h1 class="article-title"><span>springBoot集成es使用ElasticsearchTemplate执行滚动查询</span></h1>
-<p>使用Elasticsearch查询大量数据时基本的分页查询就会报错，这种情况下可以使用scroll（滚动）查询</p>
-<p>直接上代码：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建查询条件对象</span></span><br><span class="line"><span class="type">BoolQueryBuilder</span> <span class="variable">queryBuilder</span> <span class="operator">=</span> QueryBuilders.boolQuery();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 拼接查询条件</span></span><br><span class="line">queryBuilder.must(QueryBuilders.termQuery(<span class="string">&quot;status&quot;</span>, <span class="number">1</span>)); 假设查询状态为<span class="number">1</span>的</span><br><span class="line"></span><br><span class="line"><span class="comment">// 创建查询对象</span></span><br><span class="line"><span class="type">SearchQuery</span> <span class="variable">searchQuery</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">NativeSearchQueryBuilder</span>()</span><br><span class="line">                .withIndices(<span class="string">&quot;test_index&quot;</span>)<span class="comment">//索引名</span></span><br><span class="line">                .withTypes(<span class="string">&quot;test&quot;</span>)<span class="comment">//类型名</span></span><br><span class="line">                .withQuery(queryBuilder)<span class="comment">// 查询条件对象</span></span><br><span class="line">                .withPageable(PageRequest.of(<span class="number">0</span>, <span class="number">1000</span>))<span class="comment">//从0页开始查，每页1000个结果</span></span><br><span class="line">                .build();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 滚动查询</span></span><br><span class="line">ScrolledPage&lt;TestEntity&gt; scroll = (ScrolledPage&lt;TestEntity&gt;) elasticsearchTemplate.startScroll(<span class="number">3000</span>, searchQuery, TestEntity.class);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 判断是否有内容</span></span><br><span class="line"><span class="keyword">while</span> (scroll.hasContent()) &#123;</span><br><span class="line">	List&lt;TestEntity&gt; content = scroll.getContent();</span><br><span class="line">	<span class="comment">// 业务逻辑省略</span></span><br><span class="line">	<span class="comment">//取下一页，scrollId在es服务器上可能会发生变化，需要用最新的。发起continueScroll请求会重新刷新快照保留时间</span></span><br><span class="line">	scroll = (ScrolledPage&lt;TestEntity&gt;) elasticsearchTemplate.continueScroll(scroll.getScrollId(), <span class="number">3000</span>, EstateInfoEntity.class);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 最后释放查询</span></span><br><span class="line">elasticsearchTemplate.clearScroll(scroll.getScrollId());</span><br></pre></td></tr></table></figure>
+<h1 class="article-title"><span>kafka查询topic列表,和topic下消息</span></h1>
+<p>使用Kafka经常碰到需要查看topic是否创建，或是查看topic下的数据。</p>
+<p>最开始想直接找可视化工具进行查看就找到了Kafka tool 然后发现链接数据较少的环境确实比较好用，但是如果topic或topic下的数据较多就会直接卡死，导致无法打开。</p>
+<h2 id="Kafka-tool-的简单使用"><a href="#Kafka-tool-的简单使用" class="headerlink" title="Kafka tool 的简单使用"></a>Kafka tool 的简单使用</h2><p>首先去官网下载 Kafka tool ：<a target="_blank" rel="noopener" href="https://www.kafkatool.com/">https://www.kafkatool.com/</a></p>
+<p>无脑下一步进行安装。安装完成后进行新建链接操作</p>
+<div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://oscimg.oschina.net/oscnet/up-91a1301aedbeecc03163e21e4a271080a50.png"/></div></div>
+
+<p>因为数据在Kafka都是byte所以要配置byte转string才能更方便的查看</p>
+<p>在 tools –&gt; settings –&gt; Topics</p>
+<div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://oscimg.oschina.net/oscnet/up-456c58e5bf84095b03231346db2863dfed4.png"/></div></div>
+
+<p>然后选中想要查看的topic在properties中配置key和message为string</p>
+<div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://oscimg.oschina.net/oscnet/up-10f1e61451c9339c4571214167b6f97c08a.png"/></div></div>
+
+<p>然后进入topic下的分区进行查看，点击绿色查询按钮即可查看</p>
+<div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://oscimg.oschina.net/oscnet/up-1e1348d0802e7720f410da02623591e7d70.png"/></div></div>
+
+<p>如果数据量较少可以使用这个工具进行查看，但是数据太多回直接卡死</p>
+<h2 id="使用Kafka命令脚本查看"><a href="#使用Kafka命令脚本查看" class="headerlink" title="使用Kafka命令脚本查看"></a>使用Kafka命令脚本查看</h2><p>由于我们公司Kafka是部署在docker中所以需要先进入Kafka容器，然后进入opt&#x2F;kafka&#x2F;bin&#x2F;目录下，Kafka脚本命令都在这个目录下</p>
+<h3 id="查看kafka-topic列表"><a href="#查看kafka-topic列表" class="headerlink" title="查看kafka topic列表"></a>查看kafka topic列表</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kafka-topics.sh -list --zookeeper zookeeper地址:端口</span><br></pre></td></tr></table></figure>
+
+<h3 id="从头开始查看kafka-topic下的数据"><a href="#从头开始查看kafka-topic下的数据" class="headerlink" title="从头开始查看kafka topic下的数据"></a>从头开始查看kafka topic下的数据</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic topic_name --from-beginning</span><br></pre></td></tr></table></figure>
+
+<h3 id="按照偏移量查看topic下数据"><a href="#按照偏移量查看topic下数据" class="headerlink" title="按照偏移量查看topic下数据"></a>按照偏移量查看topic下数据</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic topic_name --offset latest --partition 0</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">--offset设置偏移量 latest代表最后 ，可以设置区间，不设置结尾的话默认为查询到latest(最后)</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">--partition 设置分区 使用偏移量查询时一定要设置分区才能查询</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="清除Kafka-topic下所有消息"><a href="#清除Kafka-topic下所有消息" class="headerlink" title="清除Kafka topic下所有消息"></a>清除Kafka topic下所有消息</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kafka-topics.sh --zookeeper zookeeper地址:端口 --delete --topic topic_name</span><br></pre></td></tr></table></figure>
+
+<p>删除所有消息方便从头开始观看topic消息记录</p>
 
 
 
@@ -113,7 +140,7 @@
 
 </article>
 
-<div class="related-wrap reveal" id="read-next"><section class="body"><div class="item" id="prev"><div class="note">较新文章</div><a href="/2023/06/03/elasticsearchTemplate%E7%9A%84%E8%81%9A%E5%90%88%E6%9F%A5%E8%AF%A2/">elasticsearchTemplate的聚合查询</a></div><div class="item" id="next"><div class="note">较早文章</div><a href="/2023/06/03/java%E9%9B%86%E6%88%90%E5%B0%8F%E7%B1%B3%E6%8E%A8%E9%80%81%E6%9C%8D%E5%8A%A1/">java集成小米推送服务</a></div></section></div>
+<div class="related-wrap reveal" id="read-next"><section class="body"><div class="item" id="prev"><div class="note">较新文章</div><a href="/2023/06/03/%E4%B8%80%E6%AC%A1java-lang-OutOfMemoryError-Metaspace%E5%A4%84%E7%90%86/">一次java.lang.OutOfMemoryError:Metaspace处理</a></div><div class="item" id="next"><div class="note">较早文章</div><a href="/2023/06/03/WebMagic%E7%9A%84%E5%9F%BA%E7%A1%80%E4%BD%BF%E7%94%A8/">WebMagic的基础使用</a></div></section></div>
 
 
 

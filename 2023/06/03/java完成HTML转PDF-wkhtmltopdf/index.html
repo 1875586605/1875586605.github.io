@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang='zh-CN'>
+
+<head>
+  <meta name="generator" content="Hexo 6.3.0">
+  <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.19.0">
+  <meta charset="utf-8">
+  
+
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  <link rel='dns-prefetch' href='https://gcore.jsdelivr.net'>
+  <link rel="preconnect" href="https://gcore.jsdelivr.net" crossorigin>
+  <link rel='dns-prefetch' href='//unpkg.com'>
+
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" content="#f8f8f8">
+  
+  <title>java完成HTML转PDF wkhtmltopdf - 彬的博客</title>
+
+  
+    <meta name="description" content="为什么使用wkhtmltopdfHTML转PDF的实现方式有很多，但是转换出来的PDF的质量又好有坏。之前试过IText和一些其他的工具，但是不是格式乱了就是由于标签书写不规范（没有结尾标签）导致转换出来的效果都不太满意，最后发现wkhtmltopdf转换格式什么基本没有问题而且使用也是比较简单就使用wkhtmltopdf。 第一步 下载安装官网地址：https:&#x2F;&#x2F;wkhtmltopdf.org">
+<meta property="og:type" content="article">
+<meta property="og:title" content="java完成HTML转PDF wkhtmltopdf">
+<meta property="og:url" content="http://binvv.com/2023/06/03/java%E5%AE%8C%E6%88%90HTML%E8%BD%ACPDF-wkhtmltopdf/index.html">
+<meta property="og:site_name" content="彬的博客">
+<meta property="og:description" content="为什么使用wkhtmltopdfHTML转PDF的实现方式有很多，但是转换出来的PDF的质量又好有坏。之前试过IText和一些其他的工具，但是不是格式乱了就是由于标签书写不规范（没有结尾标签）导致转换出来的效果都不太满意，最后发现wkhtmltopdf转换格式什么基本没有问题而且使用也是比较简单就使用wkhtmltopdf。 第一步 下载安装官网地址：https:&#x2F;&#x2F;wkhtmltopdf.org">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://oscimg.oschina.net/oscnet/392ab667d17e0f3d7167b8ab526f1a1753b.jpg">
+<meta property="og:image" content="https://oscimg.oschina.net/oscnet/2e0a3458123fe5acd6dcdfd2952dff417a0.jpg">
+<meta property="og:image" content="https://oscimg.oschina.net/oscnet/37fd3e58808ca091fa3e2e7afb76255e498.jpg">
+<meta property="og:image" content="https://oscimg.oschina.net/oscnet/82700564961eb6ce9c92c7b8efd9ea01b03.jpg">
+<meta property="article:published_time" content="2023-06-03T09:03:05.000Z">
+<meta property="article:modified_time" content="2023-06-03T09:03:55.862Z">
+<meta property="article:author" content="彬">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://oscimg.oschina.net/oscnet/392ab667d17e0f3d7167b8ab526f1a1753b.jpg">
+  
+  
+  
+  
+
+  <!-- feed -->
+  
+
+  
+    
+<link rel="stylesheet" href="/css/main.css">
+
+  
+
+  
+
+  
+
+  
+
+
+  
+</head>
+
+<body>
+  
+
+
+
+
+  <div class='l_body' id='start'>
+    <aside class='l_left' layout='post'>
+    
+
+  
+
+<header class="header"><div class="logo-wrap"><a class="title" href="/"><div class="main" ff="title">彬的博客</div><div class="sub normal cap">苦逼的程序员</div><div class="sub hover cap" style="opacity:0"> 996加班中</div></a></div>
+
+<nav class="menu dis-select"></nav>
+</header>
+
+
+<div class="widgets">
+<widget class="widget-wrapper search"><div class="widget-body"><div class="search-wrapper" id="search"><form class="search-form"><input type="text" class="search-input" id="search-input" data-filter="/blog/" placeholder="文章搜索"><svg t="1670596976048" class="icon search-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2676" width="200" height="200"><path d="M938.2 832.6L723.8 618.1c-2.5-2.5-5.3-4.4-7.9-6.4 36.2-55.6 57.3-121.8 57.3-193.1C773.3 222.8 614.6 64 418.7 64S64 222.8 64 418.6c0 195.9 158.8 354.6 354.6 354.6 71.3 0 137.5-21.2 193.2-57.4 2 2.7 3.9 5.4 6.3 7.8L832.5 938c14.6 14.6 33.7 21.9 52.8 21.9 19.1 0 38.2-7.3 52.8-21.8 29.2-29.1 29.2-76.4 0.1-105.5M418.7 661.3C284.9 661.3 176 552.4 176 418.6 176 284.9 284.9 176 418.7 176c133.8 0 242.6 108.9 242.6 242.7 0 133.7-108.9 242.6-242.6 242.6" p-id="2677"></path></svg></form><div id="search-result"></div><div class="search-no-result">没有找到内容！</div></div></div></widget>
+
+
+<widget class="widget-wrapper toc single" id="data-toc"><div class="widget-header cap dis-select"><span class="name">java完成HTML转PDF wkhtmltopdf</span></div><div class="widget-body fs14"><div class="doc-tree active"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BD%BF%E7%94%A8wkhtmltopdf"><span class="toc-text">为什么使用wkhtmltopdf</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E6%AD%A5-%E4%B8%8B%E8%BD%BD%E5%AE%89%E8%A3%85"><span class="toc-text">第一步 下载安装</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E6%AD%A5-%E9%85%8D%E7%BD%AE%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F"><span class="toc-text">第二步 配置环境变量</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E6%AD%A5-%E4%BB%A3%E7%A0%81%E8%B0%83%E7%94%A8wkhtmltopdf%E8%BF%9B%E8%A1%8C%E8%BD%AC%E6%8D%A2"><span class="toc-text">第三步 代码调用wkhtmltopdf进行转换</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E8%BF%87%E7%A8%8B%E4%B8%AD%E7%A2%B0%E5%88%B0%E7%9A%84%E7%9A%84%E4%B8%80%E4%BA%9B%E5%9D%91"><span class="toc-text">使用过程中碰到的的一些坑</span></a></li></ol></div></div></widget>
+
+
+
+
+</div>
+
+
+    </aside>
+    <div class='l_main'>
+      
+
+      
+
+
+
+<div class="bread-nav fs12"><div id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a><span class="sep"></span><a class="cap breadcrumb" href="/">文章</a></div><div id="post-meta">发布于&nbsp;<time datetime="2023-06-03T09:03:05.000Z">2023-06-03</time></div></div>
+
+<article class='md-text content post'>
+<h1 class="article-title"><span>java完成HTML转PDF wkhtmltopdf</span></h1>
+<h2 id="为什么使用wkhtmltopdf"><a href="#为什么使用wkhtmltopdf" class="headerlink" title="为什么使用wkhtmltopdf"></a>为什么使用wkhtmltopdf</h2><p>HTML转PDF的实现方式有很多，但是转换出来的PDF的质量又好有坏。之前试过IText和一些其他的工具，但是不是格式乱了就是由于标签书写不规范（没有结尾标签）导致转换出来的效果都不太满意，最后发现wkhtmltopdf转换格式什么基本没有问题而且使用也是比较简单就使用wkhtmltopdf。</p>
+<h2 id="第一步-下载安装"><a href="#第一步-下载安装" class="headerlink" title="第一步 下载安装"></a>第一步 下载安装</h2><p>官网地址：<a target="_blank" rel="noopener" href="https://wkhtmltopdf.org/downloads.html">https://wkhtmltopdf.org/downloads.html</a></p>
+<div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://oscimg.oschina.net/oscnet/392ab667d17e0f3d7167b8ab526f1a1753b.jpg"/></div></div>
+
+<p>根据自己的系统来选择安装包。</p>
+<h2 id="第二步-配置环境变量"><a href="#第二步-配置环境变量" class="headerlink" title="第二步 配置环境变量"></a>第二步 配置环境变量</h2><div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://oscimg.oschina.net/oscnet/2e0a3458123fe5acd6dcdfd2952dff417a0.jpg"/></div></div>
+
+<p>安装完成之后找到安装路径，将其配置到环境变量中，方便使用。</p>
+<p>配置完成环境变量之后就可以测试一下了。</p>
+<div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://oscimg.oschina.net/oscnet/37fd3e58808ca091fa3e2e7afb76255e498.jpg"/></div></div>
+
+<p>看看转换效果。</p>
+<div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://oscimg.oschina.net/oscnet/82700564961eb6ce9c92c7b8efd9ea01b03.jpg"/></div></div>
+
+<p>可以看到转换效果是非常不错的。</p>
+<h2 id="第三步-代码调用wkhtmltopdf进行转换"><a href="#第三步-代码调用wkhtmltopdf进行转换" class="headerlink" title="第三步 代码调用wkhtmltopdf进行转换"></a>第三步 代码调用wkhtmltopdf进行转换</h2><p>辅助代码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> fangrong.com.cn.common.utils;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.BufferedReader;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.io.InputStream;</span><br><span class="line"><span class="keyword">import</span> java.io.InputStreamReader;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">HtmlToPdfInterceptor</span> <span class="keyword">extends</span> <span class="title class_">Thread</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> InputStream is;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">HtmlToPdfInterceptor</span><span class="params">(InputStream is)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.is = is;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="type">InputStreamReader</span> <span class="variable">isr</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">InputStreamReader</span>(is, <span class="string">&quot;utf-8&quot;</span>);</span><br><span class="line">            <span class="type">BufferedReader</span> <span class="variable">br</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">BufferedReader</span>(isr);</span><br><span class="line">            <span class="type">String</span> <span class="variable">line</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">            <span class="keyword">while</span> ((line = br.readLine()) != <span class="literal">null</span>) &#123;</span><br><span class="line">                System.out.println(line.toString()); <span class="comment">//输出转换进度等内容</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>转换代码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> fangrong.com.cn.common.utils;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.File;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Input表单或JavaScript脚本支持：--enable-forms，下面这些是网友整理的参数说明</span></span><br><span class="line"><span class="comment"> * wkhtmltopdf [OPTIONS]... &lt;input file&gt; [More input files] &lt;output file&gt;</span></span><br><span class="line"><span class="comment"> * 常规选项</span></span><br><span class="line"><span class="comment"> * --allow &lt;path&gt;                  允许加载从指定的文件夹中的文件或文件（可重复）</span></span><br><span class="line"><span class="comment"> * --book*                         设置一会打印一本书的时候，通常设置的选项</span></span><br><span class="line"><span class="comment"> * --collate                       打印多份副本时整理</span></span><br><span class="line"><span class="comment"> * --cookie &lt;name&gt; &lt;value&gt;         设置一个额外的cookie（可重复）</span></span><br><span class="line"><span class="comment"> * --cookie-jar &lt;path&gt;             读取和写入的Cookie，并在提供的cookie jar文件</span></span><br><span class="line"><span class="comment"> * --copies &lt;number&gt;               复印打印成pdf文件数（默认为1）</span></span><br><span class="line"><span class="comment"> * --cover* &lt;url&gt;                  使用HTML文件作为封面。它会带页眉和页脚的TOC之前插入</span></span><br><span class="line"><span class="comment"> * --custom-header &lt;name&gt; &lt;value&gt;  设置一个附加的HTTP头（可重复）</span></span><br><span class="line"><span class="comment"> * --debug-javascript              显示的javascript调试输出</span></span><br><span class="line"><span class="comment"> * --default-header*               添加一个缺省的头部，与页面的左边的名称，页面数到右边，例如： --header-left &#x27;[webpage]&#x27; --header-right &#x27;[page]/[toPage]&#x27;  --header-line</span></span><br><span class="line"><span class="comment"> * --disable-external-links*       禁止生成链接到远程网页</span></span><br><span class="line"><span class="comment"> * --disable-internal-links*       禁止使用本地链接</span></span><br><span class="line"><span class="comment"> * --disable-javascript            禁止让网页执行JavaScript</span></span><br><span class="line"><span class="comment"> * --disable-pdf-compression*      禁止在PDF对象使用无损压缩</span></span><br><span class="line"><span class="comment"> * --disable-smart-shrinking*      禁止使用WebKit的智能战略收缩，使像素/ DPI比没有不变</span></span><br><span class="line"><span class="comment"> * --disallow-local-file-access    禁止允许转换的本地文件读取其他本地文件，除非explecitily允许用 --allow</span></span><br><span class="line"><span class="comment"> * --dpi &lt;dpi&gt;                     显式更改DPI（这对基于X11的系统没有任何影响）</span></span><br><span class="line"><span class="comment"> * --enable-plugins                启用已安装的插件（如Flash</span></span><br><span class="line"><span class="comment"> * --encoding &lt;encoding&gt;           设置默认的文字编码</span></span><br><span class="line"><span class="comment"> * --extended-help                 显示更广泛的帮助，详细介绍了不常见的命令开关</span></span><br><span class="line"><span class="comment"> * --forms*                        打开HTML表单字段转换为PDF表单域</span></span><br><span class="line"><span class="comment"> * --grayscale                     PDF格式将在灰阶产生</span></span><br><span class="line"><span class="comment"> * --help                          Display help</span></span><br><span class="line"><span class="comment"> * --htmldoc                       输出程序HTML帮助</span></span><br><span class="line"><span class="comment"> * --ignore-load-errors            忽略claimes加载过程中已经遇到了一个错误页面</span></span><br><span class="line"><span class="comment"> * --lowquality                    产生低品质的PDF/ PS。有用缩小结果文档的空间</span></span><br><span class="line"><span class="comment"> * --manpage                       输出程序手册页</span></span><br><span class="line"><span class="comment"> * --margin-bottom &lt;unitreal&gt;      设置页面下边距 (default 10mm)</span></span><br><span class="line"><span class="comment"> * --margin-left &lt;unitreal&gt;        将左边页边距 (default 10mm)</span></span><br><span class="line"><span class="comment"> * --margin-right &lt;unitreal&gt;       设置页面右边距 (default 10mm)</span></span><br><span class="line"><span class="comment"> * --margin-top &lt;unitreal&gt;         设置页面上边距 (default 10mm)</span></span><br><span class="line"><span class="comment"> * --minimum-font-size             &lt;)</span></span><br><span class="line"><span class="comment"> * --no-background                 不打印背景</span></span><br><span class="line"><span class="comment"> * --orientation &lt;orientation&gt;     设置方向为横向或纵向</span></span><br><span class="line"><span class="comment"> * --page-height &lt;unitreal&gt;        页面高度 (default unit millimeter)</span></span><br><span class="line"><span class="comment"> * --page-offset* &lt;offset&gt;         设置起始页码 (default )</span></span><br><span class="line"><span class="comment"> * --page-size &lt;size&gt;              设置纸张大小: A4, Letter, etc.</span></span><br><span class="line"><span class="comment"> * --page-width &lt;unitreal&gt;         页面宽度 (default unit millimeter)</span></span><br><span class="line"><span class="comment"> * --password &lt;password&gt;           HTTP验证密码</span></span><br><span class="line"><span class="comment"> * --post &lt;name&gt; &lt;value&gt;           Add an additional post field (repeatable)</span></span><br><span class="line"><span class="comment"> * --post-file &lt;name&gt; &lt;path&gt;       Post an aditional file (repeatable)</span></span><br><span class="line"><span class="comment"> * --print-media-type*             使用的打印介质类型，而不是屏幕</span></span><br><span class="line"><span class="comment"> * --proxy &lt;proxy&gt;                 使用代理</span></span><br><span class="line"><span class="comment"> * --quiet                         Be less verbose</span></span><br><span class="line"><span class="comment"> * --read-args-from-stdin          读取标准输入的命令行参数</span></span><br><span class="line"><span class="comment"> * --readme                        输出程序自述</span></span><br><span class="line"><span class="comment"> * --redirect-delay &lt;msec&gt;         等待几毫秒为JS-重定向(default )</span></span><br><span class="line"><span class="comment"> * --replace* &lt;name&gt; &lt;value&gt;       替换名称，值的页眉和页脚（可重复）</span></span><br><span class="line"><span class="comment"> * --stop-slow-scripts             停止运行缓慢的JavaScripts</span></span><br><span class="line"><span class="comment"> * --title &lt;text&gt;                  生成的PDF文件的标题（第一个文档的标题使用，如果没有指定）</span></span><br><span class="line"><span class="comment"> * --toc*                          插入的内容的表中的文件的开头</span></span><br><span class="line"><span class="comment"> * --use-xserver*                  使用X服务器（一些插件和其他的东西没有X11可能无法正常工作）</span></span><br><span class="line"><span class="comment"> * --user-style-sheet &lt;url&gt;        指定用户的样式表，加载在每一页中</span></span><br><span class="line"><span class="comment"> * --username &lt;username&gt;           HTTP认证的用户名</span></span><br><span class="line"><span class="comment"> * --version                       输出版本信息退出</span></span><br><span class="line"><span class="comment"> * --zoom                          &lt;)</span></span><br><span class="line"><span class="comment"> * &lt;p&gt;</span></span><br><span class="line"><span class="comment"> * 页眉和页脚选项</span></span><br><span class="line"><span class="comment"> * --header-center*    &lt;text&gt;  (设置在中心位置的页眉内容)</span></span><br><span class="line"><span class="comment"> * --header-font-name* &lt;name&gt;  (default Arial)(设置页眉的字体名称)</span></span><br><span class="line"><span class="comment"> * --header-font-size* &lt;size&gt;  (设置页眉的字体大小)</span></span><br><span class="line"><span class="comment"> * --header-html*      &lt;url&gt;   (添加一个HTML页眉，后面是网址)</span></span><br><span class="line"><span class="comment"> * --header-left*      &lt;text&gt;  (左对齐的页眉文本)</span></span><br><span class="line"><span class="comment"> * --header-line*              (显示一条线在页眉下)</span></span><br><span class="line"><span class="comment"> * --header-right*     &lt;text&gt;  (右对齐页眉文本)</span></span><br><span class="line"><span class="comment"> * --header-spacing*   &lt;real&gt;  (设置页眉和内容的距离，默认0)</span></span><br><span class="line"><span class="comment"> * --footer-center*    &lt;text&gt;  (设置在中心位置的页脚内容)</span></span><br><span class="line"><span class="comment"> * --footer-font-name* &lt;name&gt;  (设置页脚的字体名称)</span></span><br><span class="line"><span class="comment"> * --footer-font-size* &lt;size&gt;  (设置页脚的字体大小default )</span></span><br><span class="line"><span class="comment"> * --footer-html*      &lt;url&gt;   (添加一个HTML页脚，后面是网址)</span></span><br><span class="line"><span class="comment"> * --footer-left*      &lt;text&gt;  (左对齐的页脚文本)</span></span><br><span class="line"><span class="comment"> * --footer-line*              显示一条线在页脚内容上)</span></span><br><span class="line"><span class="comment"> * --footer-right*     &lt;text&gt;  (右对齐页脚文本)</span></span><br><span class="line"><span class="comment"> * --footer-spacing*   &lt;real&gt;  (设置页脚和内容的距离)</span></span><br><span class="line"><span class="comment"> * &lt;p&gt;</span></span><br><span class="line"><span class="comment"> * 页脚和页眉</span></span><br><span class="line"><span class="comment"> * [page]       由当前正在打印的页的数目代替</span></span><br><span class="line"><span class="comment"> * [frompage]   由要打印的第一页的数量取代</span></span><br><span class="line"><span class="comment"> * [topage]     由最后一页要打印的数量取代</span></span><br><span class="line"><span class="comment"> * [webpage]    通过正在打印的页面的URL替换</span></span><br><span class="line"><span class="comment"> * [section]    由当前节的名称替换</span></span><br><span class="line"><span class="comment"> * [subsection] 由当前小节的名称替换</span></span><br><span class="line"><span class="comment"> * [date]       由当前日期系统的本地格式取代</span></span><br><span class="line"><span class="comment"> * [time]       由当前时间，系统的本地格式取代</span></span><br><span class="line"><span class="comment"> * &lt;p&gt;</span></span><br><span class="line"><span class="comment"> * 轮廓选项</span></span><br><span class="line"><span class="comment"> * --dump-outline  &lt;file&gt;  转储目录到一个文件</span></span><br><span class="line"><span class="comment"> * --outline               显示目录（文章中h1，h2来定）</span></span><br><span class="line"><span class="comment"> * --outline-depth &lt;level&gt; 设置目录的深度（默认为4）</span></span><br><span class="line"><span class="comment"> * &lt;p&gt;</span></span><br><span class="line"><span class="comment"> * 表内容选项中</span></span><br><span class="line"><span class="comment"> * --toc-depth*              &lt;level&gt;  Set the depth of the toc (default)</span></span><br><span class="line"><span class="comment"> * --toc-disable-back-links*          Do not link from section header to toc</span></span><br><span class="line"><span class="comment"> * --toc-disable-links*               Do not link from toc to sections</span></span><br><span class="line"><span class="comment"> * --toc-font-name*          &lt;name&gt;   Set the font used for the toc (default Arial)</span></span><br><span class="line"><span class="comment"> * --toc-header-font-name*   &lt;name&gt;   The font of the toc header (if unset use --toc-font-name)</span></span><br><span class="line"><span class="comment"> * --toc-header-font-size*   &lt;size&gt;   The font size of the toc header (default)</span></span><br><span class="line"><span class="comment"> * --toc-header-text*        &lt;text&gt;   The header text of the toc (default Table Of Contents)</span></span><br><span class="line"><span class="comment"> * --toc-l1-font-size*       &lt;size&gt;   Set the font size on level of the toc (default)</span></span><br><span class="line"><span class="comment"> * --toc-l1-indentation*     &lt;num&gt;    Set indentation on level of the toc (default)</span></span><br><span class="line"><span class="comment"> * --toc-l2-font-size*       &lt;size&gt;   Set the font size on level of the toc (default)</span></span><br><span class="line"><span class="comment"> * --toc-l2-indentation*     &lt;num&gt;    Set indentation on level of the toc (default)</span></span><br><span class="line"><span class="comment"> * --toc-l3-font-size*       &lt;size&gt;   Set the font size on level of the toc (default)</span></span><br><span class="line"><span class="comment"> * --toc-l3-indentation*     &lt;num&gt;    Set indentation on level of the toc (default)</span></span><br><span class="line"><span class="comment"> * --toc-l4-font-size*       &lt;size&gt;   Set the font size on level of the toc (default)</span></span><br><span class="line"><span class="comment"> * --toc-l4-indentation*     &lt;num&gt;    Set indentation on level of the toc (default)</span></span><br><span class="line"><span class="comment"> * --toc-l5-font-size*       &lt;size&gt;   Set the font size on level of the toc (default)</span></span><br><span class="line"><span class="comment"> * --toc-l5-indentation*     &lt;num&gt;    Set indentation on level of the toc (default)</span></span><br><span class="line"><span class="comment"> * --toc-l6-font-size*       &lt;size&gt;   Set the font size on level of the toc (default)</span></span><br><span class="line"><span class="comment"> * --toc-l6-indentation*     &lt;num&gt;    Set indentation on level of the toc (default)</span></span><br><span class="line"><span class="comment"> * --toc-l7-font-size*       &lt;size&gt;   Set the font size on level of the toc (default)</span></span><br><span class="line"><span class="comment"> * --toc-l7-indentation*     &lt;num&gt;    Set indentation on level of the toc (default)</span></span><br><span class="line"><span class="comment"> * --toc-no-dots*                     Do not use dots, in the toc</span></span><br><span class="line"><span class="comment"> * ------------------------------------------------------------------------------------------------------------</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">HtmlToPdf</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * html转pdf</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> srcPath  html路径，可以是硬盘上的路径，也可以是网络路径</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> file pdf文件</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 转换成功返回true</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="type">boolean</span> <span class="title function_">convert</span><span class="params">(String srcPath, File file)</span> &#123;</span><br><span class="line"></span><br><span class="line">        <span class="type">File</span> <span class="variable">parent</span> <span class="operator">=</span> file.getParentFile();</span><br><span class="line">        <span class="comment">// 如果pdf保存路径不存在，则创建路径</span></span><br><span class="line">        <span class="keyword">if</span> (!parent.exists()) &#123;</span><br><span class="line">            parent.mkdirs();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="type">StringBuilder</span> <span class="variable">cmd</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">StringBuilder</span>();</span><br><span class="line">        String toPdfTool;</span><br><span class="line">        <span class="keyword">if</span> (System.getProperty(<span class="string">&quot;os.name&quot;</span>).indexOf(<span class="string">&quot;Windows&quot;</span>) == -<span class="number">1</span>) &#123; <span class="comment">// 根据系统</span></span><br><span class="line">            <span class="comment">// 非windows 系统</span></span><br><span class="line">            toPdfTool = <span class="string">&quot;/usr/local/bin/wkhtmltopdf&quot;</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            toPdfTool = <span class="string">&quot;D:/htmlTopdf/wkhtmltopdf/bin/wkhtmltopdf.exe&quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">	<span class="comment">// 这里可以拼接页眉页脚等参数 参数详情在上方</span></span><br><span class="line">        cmd.append(toPdfTool);</span><br><span class="line">        cmd.append(<span class="string">&quot; &quot;</span>);</span><br><span class="line">        cmd.append(srcPath);</span><br><span class="line">        cmd.append(<span class="string">&quot; &quot;</span>);</span><br><span class="line">        cmd.append(file.getAbsolutePath());</span><br><span class="line"></span><br><span class="line">        <span class="type">boolean</span> <span class="variable">result</span> <span class="operator">=</span> <span class="literal">true</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="type">Process</span> <span class="variable">proc</span> <span class="operator">=</span> Runtime.getRuntime().exec(cmd.toString());</span><br><span class="line">            <span class="type">HtmlToPdfInterceptor</span> <span class="variable">error</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">HtmlToPdfInterceptor</span>(proc.getErrorStream());</span><br><span class="line">            <span class="type">HtmlToPdfInterceptor</span> <span class="variable">output</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">HtmlToPdfInterceptor</span>(proc.getInputStream());</span><br><span class="line">            error.start();</span><br><span class="line">            output.start();</span><br><span class="line">            proc.waitFor();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            result = <span class="literal">false</span>;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>到此集成完成。</p>
+<h2 id="使用过程中碰到的的一些坑"><a href="#使用过程中碰到的的一些坑" class="headerlink" title="使用过程中碰到的的一些坑"></a>使用过程中碰到的的一些坑</h2><p>这些坑主要是出现在Linux环境下的</p>
+<ul>
+<li>乱码问题</li>
+</ul>
+<p>一般乱码的主要原因就是因为Linux中没有simsun的字体，将C:\Windows\Fonts中的simsun.ttc拷贝到linux服务器&#x2F;usr&#x2F;share&#x2F;fonts&#x2F;目录下,下次再生成pdf就正常了</p>
+<ul>
+<li>Docker容器中的java程序无法调用到Linux本地的wkhtmltopdf脚本</li>
+</ul>
+<p>需要将本地的文件挂载映射到dockers容器当中</p>
+
+
+
+<div class="article-footer reveal fs14"><section id="license"><div class="header"><span>许可协议</span></div><div class="body"><p>本文采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">署名-非商业性使用-相同方式共享 4.0 国际</a> 许可协议，转载请注明出处。</p>
+</div></section></div>
+
+</article>
+
+<div class="related-wrap reveal" id="read-next"><section class="body"><div class="item" id="prev"><div class="note">较新文章</div><a href="/2023/06/03/%E6%A0%B9%E6%8D%AE%E4%B8%80%E4%B8%AA%E7%BB%8F%E7%BA%AC%E5%BA%A6%E6%9F%A5%E8%AF%A2%E9%99%84%E8%BF%91%E7%9A%84%E6%A5%BC%E7%9B%98%E4%BF%A1%E6%81%AF/">根据一个经纬度查询附近的楼盘信息</a></div><div class="item" id="next"><div class="note">较早文章</div><a href="/2023/06/03/Markdown-%E7%BC%96%E8%BE%91%E5%99%A8Editor-md%E7%AE%80%E5%8D%95%E9%9B%86%E6%88%90/">Markdown 编辑器Editor.md简单集成</a></div></section></div>
+
+
+
+
+
+
+
+
+      
+<footer class="page-footer reveal fs12"><hr><div class="text"><p>本站由 <a href="/">@binvv</a> 使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar">Stellar</a> 主题创建。<br>本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议，转载请注明出处。</p>
+</div></footer>
+
+      <div class='float-panel mobile-only blur' style='display:none'>
+  <button type='button' class='sidebar-toggle mobile' onclick='sidebar.toggle()'>
+    <svg class="icon" style="width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="15301"><path d="M566.407 808.3c26.9-0.1 49.3-20.8 51.6-47.6-1.9-27.7-23.9-49.7-51.6-51.6h-412.6c-28.2-1.4-52.6 19.5-55.5 47.6 2.3 26.8 24.6 47.5 51.6 47.6h416.5v4z m309.3-249.9c26.9-0.1 49.3-20.8 51.6-47.6-2.2-26.8-24.6-47.5-51.6-47.6h-721.9c-27.7-2.8-52.5 17.4-55.3 45.1-0.1 0.8-0.1 1.7-0.2 2.5 0.9 27.2 23.6 48.5 50.7 47.6H875.707z m-103.1-245.9c26.9-0.1 49.3-20.8 51.6-47.6-0.4-28.3-23.2-51.1-51.5-51.6h-618.9c-29.5-1.1-54.3 21.9-55.5 51.4v0.2c1.4 27.8 25.2 49.2 53 47.8 0.8 0 1.7-0.1 2.5-0.2h618.8z" p-id="15302"></path><path d="M566.407 808.3c26.9-0.1 49.3-20.8 51.6-47.6-1.9-27.7-23.9-49.7-51.6-51.6h-412.6c-28.2-1.4-52.6 19.5-55.5 47.6 1.9 27.7 23.9 49.7 51.6 51.6h416.5z m309.3-249.9c26.9-0.1 49.3-20.8 51.6-47.6-2.2-26.8-24.6-47.5-51.6-47.6h-721.9c-27.7-2.8-52.5 17.4-55.3 45.1-0.1 0.8-0.1 1.7-0.2 2.5 0.9 27.2 23.6 48.5 50.7 47.6H875.707z m-103.1-245.9c26.9-0.1 49.3-20.8 51.6-47.6-0.4-28.3-23.2-51.1-51.5-51.6h-618.9c-29.5-1.1-54.3 21.9-55.5 51.4v0.2c1.4 27.8 25.2 49.2 53 47.8 0.8 0 1.7-0.1 2.5-0.2h618.8z" p-id="15303"></path></svg>
+  </button>
+</div>
+
+    </div>
+  </div>
+  <div class='scripts'>
+    <script type="text/javascript">
+  const stellar = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    loadCSS: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    // 从 butterfly 和 volantis 获得灵感
+    loadScript: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      if (src.startsWith('/')){
+        src = stellar.config.root + src.substring(1);
+      }
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    // https://github.com/jerryc127/hexo-theme-butterfly
+    jQuery: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        stellar.loadScript(stellar.plugins.jQuery).then(fn)
+      } else {
+        fn()
+      }
+    }
+  };
+  stellar.version = '1.19.0';
+  stellar.github = 'https://github.com/xaoxuu/hexo-theme-stellar/tree/1.19.0';
+  stellar.config = {
+    date_suffix: {
+      just: '刚刚',
+      min: '分钟前',
+      hour: '小时前',
+      day: '天前',
+      month: '个月前',
+    },
+    root : '/',
+  };
+
+  // required plugins (only load if needs)
+  stellar.plugins = {
+    jQuery: 'https://gcore.jsdelivr.net/npm/jquery@3.6.2/dist/jquery.min.js'
+  };
+
+  if ('local_search') {
+    stellar.search = {};
+    stellar.search.service = 'local_search';
+    if (stellar.search.service == 'local_search') {
+      let service_obj = Object.assign({}, {"field":"all","path":"/search.json","content":true,"sort":"-date"});
+      stellar.search[stellar.search.service] = service_obj;
+    }
+  }
+
+  // stellar js
+  stellar.plugins.stellar = Object.assign({"sites":"/js/plugins/sites.js","friends":"/js/plugins/friends.js","ghinfo":"/js/plugins/ghinfo.js","timeline":"/js/plugins/timeline.js","linkcard":"/js/plugins/linkcard.js","fcircle":"/js/plugins/fcircle.js","weibo":"/js/plugins/weibo.js"});
+
+  stellar.plugins.marked = Object.assign("https://cdn.bootcdn.net/ajax/libs/marked/4.0.18/marked.min.js");
+  // optional plugins
+  if ('true' == 'true') {
+    stellar.plugins.lazyload = Object.assign({"enable":true,"js":"https://gcore.jsdelivr.net/npm/vanilla-lazyload@17.8.3/dist/lazyload.min.js","transition":"blur"});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.swiper = Object.assign({"enable":true,"css":"https://unpkg.com/swiper@8.4.5/swiper-bundle.min.css","js":"https://unpkg.com/swiper@8.4.5/swiper-bundle.min.js"});
+  }
+  if ('' == 'true') {
+    stellar.plugins.scrollreveal = Object.assign({"enable":null,"js":"https://gcore.jsdelivr.net/npm/scrollreveal@4.0.9/dist/scrollreveal.min.js","distance":"8px","duration":500,"interval":100,"scale":1});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.preload = Object.assign({"enable":true,"service":"flying_pages","instant_page":"https://gcore.jsdelivr.net/gh/volantis-x/cdn-volantis@4.1.2/js/instant_page.js","flying_pages":"https://gcore.jsdelivr.net/gh/gijo-varghese/flying-pages@2.1.2/flying-pages.min.js"});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.fancybox = Object.assign({"enable":true,"js":"https://gcore.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js","css":"https://gcore.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.css","selector":".swiper-slide img"});
+  }
+  if ('false' == 'true') {
+    stellar.plugins.heti = Object.assign({"enable":false,"css":"https://unpkg.com/heti@0.9.2/umd/heti.min.css","js":"https://unpkg.com/heti@0.9.2/umd/heti-addon.min.js"});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.copycode = Object.assign({"enable":true,"js":"/js/plugins/copycode.js","default_text":"Copy","success_text":"Copied"});
+  }
+</script>
+
+<!-- required -->
+
+  
+<script src="/js/main.js" async></script>
+
+
+
+<!-- optional -->
+
+
+
+<!-- inject -->
+
+
+  </div>
+</body>
+</html>

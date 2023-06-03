@@ -20,20 +20,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="theme-color" content="#f8f8f8">
   
-  <title>springBoot集成es使用ElasticsearchTemplate执行滚动查询 - 彬的博客</title>
+  <title>一次java.lang.OutOfMemoryError:Metaspace处理 - 彬的博客</title>
 
   
-    <meta name="description" content="使用Elasticsearch查询大量数据时基本的分页查询就会报错，这种情况下可以使用scroll（滚动）查询 直接上代码： 123456789101112131415161718192021222324252627&#x2F;&#x2F; 创建查询条件对象BoolQueryBuilder queryBuilder &#x3D; QueryBuilders.boolQuery();&#x2F;&#x2F; 拼接查询条件queryBuilder.m">
+    <meta name="description" content="其实这个问题非常明显就是Metaspace内存不够导致溢出，调整jvm的-XX:MetaspaceSize&#x3D;56m -XX:MaxMetaspaceSize&#x3D;128m元空间大小参数就能解决。但是根据甲方要求，必须要给出明确的解释，排除是否是内存泄露导致的OutOfMemoryError: Metaspac报错。没有办法，甲方爸爸的要求。那就找点证据说明就是内存给小了的问题。 由">
 <meta property="og:type" content="article">
-<meta property="og:title" content="springBoot集成es使用ElasticsearchTemplate执行滚动查询">
-<meta property="og:url" content="http://binvv.com/2023/06/03/springBoot%E9%9B%86%E6%88%90es%E4%BD%BF%E7%94%A8ElasticsearchTemplate%E6%89%A7%E8%A1%8C%E6%BB%9A%E5%8A%A8%E6%9F%A5%E8%AF%A2/index.html">
+<meta property="og:title" content="一次java.lang.OutOfMemoryError:Metaspace处理">
+<meta property="og:url" content="http://binvv.com/2023/06/03/%E4%B8%80%E6%AC%A1java-lang-OutOfMemoryError-Metaspace%E5%A4%84%E7%90%86/index.html">
 <meta property="og:site_name" content="彬的博客">
-<meta property="og:description" content="使用Elasticsearch查询大量数据时基本的分页查询就会报错，这种情况下可以使用scroll（滚动）查询 直接上代码： 123456789101112131415161718192021222324252627&#x2F;&#x2F; 创建查询条件对象BoolQueryBuilder queryBuilder &#x3D; QueryBuilders.boolQuery();&#x2F;&#x2F; 拼接查询条件queryBuilder.m">
+<meta property="og:description" content="其实这个问题非常明显就是Metaspace内存不够导致溢出，调整jvm的-XX:MetaspaceSize&#x3D;56m -XX:MaxMetaspaceSize&#x3D;128m元空间大小参数就能解决。但是根据甲方要求，必须要给出明确的解释，排除是否是内存泄露导致的OutOfMemoryError: Metaspac报错。没有办法，甲方爸爸的要求。那就找点证据说明就是内存给小了的问题。 由">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2023-06-03T08:53:52.000Z">
-<meta property="article:modified_time" content="2023-06-03T08:54:53.476Z">
+<meta property="og:image" content="https://oscimg.oschina.net/oscnet/up-a00ccb457df60e5726dbd65c03e1d124878.png">
+<meta property="og:image" content="https://oscimg.oschina.net/oscnet/up-b27a11dd0f8164ce090488343fcaf1bd5b6.png">
+<meta property="og:image" content="https://oscimg.oschina.net/oscnet/up-09a8063bd005111553926e49ccf70170ecd.png">
+<meta property="og:image" content="https://oscimg.oschina.net/oscnet/up-76c2e7634d26c75d6d1eddffe25dcf32d4b.png">
+<meta property="og:image" content="https://oscimg.oschina.net/oscnet/up-1afc4d7c0b353ed173099850e5f94ccef30.png">
+<meta property="og:image" content="https://oscimg.oschina.net/oscnet/up-c01c37b46351780c3bfb3818914fd037a3d.png">
+<meta property="og:image" content="https://oscimg.oschina.net/oscnet/up-7718828a6100c6322927a01dad860db088a.png">
+<meta property="og:image" content="https://oscimg.oschina.net/oscnet/up-f7642e7fcc2214a3c6045ac6b91e685a9b1.png">
+<meta property="article:published_time" content="2023-06-03T09:23:09.000Z">
+<meta property="article:modified_time" content="2023-06-03T09:23:35.312Z">
 <meta property="article:author" content="彬">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://oscimg.oschina.net/oscnet/up-a00ccb457df60e5726dbd65c03e1d124878.png">
   
   
   
@@ -98,13 +107,102 @@
 
 
 
-<div class="bread-nav fs12"><div id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a><span class="sep"></span><a class="cap breadcrumb" href="/">文章</a></div><div id="post-meta">发布于&nbsp;<time datetime="2023-06-03T08:53:52.000Z">2023-06-03</time></div></div>
+<div class="bread-nav fs12"><div id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a><span class="sep"></span><a class="cap breadcrumb" href="/">文章</a></div><div id="post-meta">发布于&nbsp;<time datetime="2023-06-03T09:23:09.000Z">2023-06-03</time></div></div>
 
 <article class='md-text content post'>
-<h1 class="article-title"><span>springBoot集成es使用ElasticsearchTemplate执行滚动查询</span></h1>
-<p>使用Elasticsearch查询大量数据时基本的分页查询就会报错，这种情况下可以使用scroll（滚动）查询</p>
-<p>直接上代码：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建查询条件对象</span></span><br><span class="line"><span class="type">BoolQueryBuilder</span> <span class="variable">queryBuilder</span> <span class="operator">=</span> QueryBuilders.boolQuery();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 拼接查询条件</span></span><br><span class="line">queryBuilder.must(QueryBuilders.termQuery(<span class="string">&quot;status&quot;</span>, <span class="number">1</span>)); 假设查询状态为<span class="number">1</span>的</span><br><span class="line"></span><br><span class="line"><span class="comment">// 创建查询对象</span></span><br><span class="line"><span class="type">SearchQuery</span> <span class="variable">searchQuery</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">NativeSearchQueryBuilder</span>()</span><br><span class="line">                .withIndices(<span class="string">&quot;test_index&quot;</span>)<span class="comment">//索引名</span></span><br><span class="line">                .withTypes(<span class="string">&quot;test&quot;</span>)<span class="comment">//类型名</span></span><br><span class="line">                .withQuery(queryBuilder)<span class="comment">// 查询条件对象</span></span><br><span class="line">                .withPageable(PageRequest.of(<span class="number">0</span>, <span class="number">1000</span>))<span class="comment">//从0页开始查，每页1000个结果</span></span><br><span class="line">                .build();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 滚动查询</span></span><br><span class="line">ScrolledPage&lt;TestEntity&gt; scroll = (ScrolledPage&lt;TestEntity&gt;) elasticsearchTemplate.startScroll(<span class="number">3000</span>, searchQuery, TestEntity.class);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 判断是否有内容</span></span><br><span class="line"><span class="keyword">while</span> (scroll.hasContent()) &#123;</span><br><span class="line">	List&lt;TestEntity&gt; content = scroll.getContent();</span><br><span class="line">	<span class="comment">// 业务逻辑省略</span></span><br><span class="line">	<span class="comment">//取下一页，scrollId在es服务器上可能会发生变化，需要用最新的。发起continueScroll请求会重新刷新快照保留时间</span></span><br><span class="line">	scroll = (ScrolledPage&lt;TestEntity&gt;) elasticsearchTemplate.continueScroll(scroll.getScrollId(), <span class="number">3000</span>, EstateInfoEntity.class);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 最后释放查询</span></span><br><span class="line">elasticsearchTemplate.clearScroll(scroll.getScrollId());</span><br></pre></td></tr></table></figure>
+<h1 class="article-title"><span>一次java.lang.OutOfMemoryError:Metaspace处理</span></h1>
+<p>其实这个问题非常明显就是Metaspace内存不够导致溢出，调整jvm的-XX:MetaspaceSize&#x3D;56m -XX:MaxMetaspaceSize&#x3D;128m元空间大小参数就能解决。但是根据甲方要求，必须要给出明确的解释，排除是否是内存泄露导致的OutOfMemoryError: Metaspac报错。没有办法，甲方爸爸的要求。那就找点证据说明就是内存给小了的问题。</p>
+<p>由于之前的容器已经清除，只能在配置一样的环境中分析。<br>首先查看当前jvm Metaspace分配的空间大小。我是通过arthas的jvm命令进行查看的。<br>首先拉去arthas的jar包。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -O https://arthas.aliyun.com/arthas-boot.jar</span><br></pre></td></tr></table></figure>
+
+<p>然后将jar复制到你要查看项目的docker容器中去</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker cp ./arthas-boot.jar  &#123;容器名称或id&#125;:/home/</span><br></pre></td></tr></table></figure>
+
+<p>进入容器</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker exec -it &#123;容器名称或id&#125; sh</span><br></pre></td></tr></table></figure>
+
+<p>启动arthas-boot.jar</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -jar arthas-boot.jar</span><br></pre></td></tr></table></figure>
+<div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://oscimg.oschina.net/oscnet/up-a00ccb457df60e5726dbd65c03e1d124878.png"/></div></div>
+
+<p>看到以上证明启动成功</p>
+<p>输入jvm查看jvm信息</p>
+<div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://oscimg.oschina.net/oscnet/up-b27a11dd0f8164ce090488343fcaf1bd5b6.png"/></div></div>
+
+<p>和启动配置是一致的。(退出arthas最好使用stop，不然在其他docker中启动会监控的依然是这个项目。)<br>arthas文档地址：<a target="_blank" rel="noopener" href="https://arthas.aliyun.com/doc/install-detail.html">https://arthas.aliyun.com/doc/install-detail.html</a> 这个工具功能还有很多比如监控代码执行时间等等。</p>
+<p>接下来使用jstat查看项目的gc状况<br>在容器中输入jps，然后就可以使用jstat命令查看。输入jstat -gcutil pid查看gc概要信息</p>
+<div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://oscimg.oschina.net/oscnet/up-09a8063bd005111553926e49ccf70170ecd.png"/></div></div>
+
+<table>
+<thead>
+<tr>
+<th>列名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>S0</td>
+<td>S0(Survivor 0)空间使用百分比(相对于当前容量)</td>
+</tr>
+<tr>
+<td>S1</td>
+<td>S1(Survivor 1)空间使用百分比(相对于当前容量)</td>
+</tr>
+<tr>
+<td>E</td>
+<td>Eden空间使用百分比(相对于当前容量)</td>
+</tr>
+<tr>
+<td>O</td>
+<td>老年代空间使用百分比(相对于当前容量)</td>
+</tr>
+<tr>
+<td>M</td>
+<td>元空间(Metaspace)使用百分比(相对于当前容量)</td>
+</tr>
+<tr>
+<td>CCS</td>
+<td>CCS空间使用百分比</td>
+</tr>
+<tr>
+<td>YGC</td>
+<td>新生代GC(Minor GC&#x2F;Young GC)发生的次数</td>
+</tr>
+<tr>
+<td>YGCT</td>
+<td>YGC所消耗的时间, 单位s</td>
+</tr>
+<tr>
+<td>FGC</td>
+<td>Full GC发生的次数</td>
+</tr>
+<tr>
+<td>FGCT</td>
+<td>Full GC消耗的时间, 单位s</td>
+</tr>
+<tr>
+<td>GCT</td>
+<td>所有GC消耗的总时间, 单位s</td>
+</tr>
+</tbody></table>
+<p>通过上图分析新生代发生了大量的gc，导致老年代数据快速积压，然后发生Full GC。<br>接下来将jvm的加载类使用jmap dump下来到本地分析查看。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jmap -dump:live,format=b,file=dump.hprof 6</span><br></pre></td></tr></table></figure>
+
+<p>可以看到本地生成了个dump.hprof 文件</p>
+<div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://oscimg.oschina.net/oscnet/up-76c2e7634d26c75d6d1eddffe25dcf32d4b.png"/></div></div>
+
+<p>将它拉取到本地，使用JProfiler打开<br>JProfiler官网：<a target="_blank" rel="noopener" href="https://www.ej-technologies.com/products/jprofiler/overview.html">https://www.ej-technologies.com/products/jprofiler/overview.html</a></p>
+<div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://oscimg.oschina.net/oscnet/up-1afc4d7c0b353ed173099850e5f94ccef30.png"/></div></div>
+
+<p>这些类点进去看看是否有大量创建的异常类</p>
+<div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://oscimg.oschina.net/oscnet/up-c01c37b46351780c3bfb3818914fd037a3d.png"/></div></div>
+
+<p>发现没有异常创建的类，分析就是单纯的空间给小了。加大元空间容量分配-XX:MetaspaceSize&#x3D;256m -XX:MaxMetaspaceSize&#x3D;512m 再运行2天看看gc状况</p>
+<div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://oscimg.oschina.net/oscnet/up-7718828a6100c6322927a01dad860db088a.png"/></div></div>
+
+<div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://oscimg.oschina.net/oscnet/up-f7642e7fcc2214a3c6045ac6b91e685a9b1.png"/></div></div>
+
+<p>发现新生代gc2w多次，Full GC次数为0，gc大部分都发生在新生代。说明配置有效。<br>这是我第一次实战调优，要是哪里有问题请指出，互相学习一下。</p>
 
 
 
@@ -113,7 +211,7 @@
 
 </article>
 
-<div class="related-wrap reveal" id="read-next"><section class="body"><div class="item" id="prev"><div class="note">较新文章</div><a href="/2023/06/03/elasticsearchTemplate%E7%9A%84%E8%81%9A%E5%90%88%E6%9F%A5%E8%AF%A2/">elasticsearchTemplate的聚合查询</a></div><div class="item" id="next"><div class="note">较早文章</div><a href="/2023/06/03/java%E9%9B%86%E6%88%90%E5%B0%8F%E7%B1%B3%E6%8E%A8%E9%80%81%E6%9C%8D%E5%8A%A1/">java集成小米推送服务</a></div></section></div>
+<div class="related-wrap reveal" id="read-next"><section class="body"><div class="item" id="prev"><div class="note">较新文章</div><a href="/2023/06/03/RedisTemplate%E6%A0%B9%E6%8D%AEhash%E7%B1%BB%E5%9E%8B%E4%B8%AD%E7%9A%84item%E6%A8%A1%E7%B3%8A%E6%9F%A5%E8%AF%A2-%E7%84%B6%E5%90%8E%E5%88%A0%E9%99%A4/">RedisTemplate根据hash类型中的item模糊查询,然后删除</a></div><div class="item" id="next"><div class="note">较早文章</div><a href="/2023/06/03/kafka%E6%9F%A5%E8%AF%A2topic%E5%88%97%E8%A1%A8-%E5%92%8Ctopic%E4%B8%8B%E6%B6%88%E6%81%AF/">kafka查询topic列表,和topic下消息</a></div></section></div>
 
 
 
