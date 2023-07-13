@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang='zh-CN'>
+
+<head>
+  <meta name="generator" content="Hexo 6.3.0">
+  <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.19.0">
+  <meta name="referrer" content="same-origin"/>
+  <meta charset="utf-8">
+  
+
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  <link rel='dns-prefetch' href='https://gcore.jsdelivr.net'>
+  <link rel="preconnect" href="https://gcore.jsdelivr.net" crossorigin>
+  <link rel='dns-prefetch' href='//unpkg.com'>
+
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" content="#f8f8f8">
+  
+  <title>记录使用微信支付 APIv3 Java SDK的使用和踩的一些坑 - 彬的博客</title>
+
+  
+    <meta name="description" content="接入使用引入依赖12345&lt;dependency&gt;    &lt;groupId&gt;com.github.wechatpay-apiv3&lt;&#x2F;groupId&gt;    &lt;artifactId&gt;wechatpay-java&lt;&#x2F;artifactId&gt;    &lt;version&gt;0.2.8&lt;&#x2F;version&gt;&lt;&#x2F;dependen">
+<meta property="og:type" content="article">
+<meta property="og:title" content="记录使用微信支付 APIv3 Java SDK的使用和踩的一些坑">
+<meta property="og:url" content="http://binvv.com/2023/07/13/%E8%AE%B0%E5%BD%95%E4%BD%BF%E7%94%A8%E5%BE%AE%E4%BF%A1%E6%94%AF%E4%BB%98-APIv3-Java-SDK%E7%9A%84%E4%BD%BF%E7%94%A8%E5%92%8C%E8%B8%A9%E7%9A%84%E4%B8%80%E4%BA%9B%E5%9D%91/index.html">
+<meta property="og:site_name" content="彬的博客">
+<meta property="og:description" content="接入使用引入依赖12345&lt;dependency&gt;    &lt;groupId&gt;com.github.wechatpay-apiv3&lt;&#x2F;groupId&gt;    &lt;artifactId&gt;wechatpay-java&lt;&#x2F;artifactId&gt;    &lt;version&gt;0.2.8&lt;&#x2F;version&gt;&lt;&#x2F;dependen">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://oscimg.oschina.net/oscnet/up-6220817d824cb9ad32eba2162da462bc3ef.png">
+<meta property="og:image" content="https://oscimg.oschina.net/oscnet/up-d62de331a15997e605d1e5a5041bc1338bb.png">
+<meta property="article:published_time" content="2023-07-13T08:37:31.000Z">
+<meta property="article:modified_time" content="2023-07-13T08:49:01.112Z">
+<meta property="article:author" content="彬">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://oscimg.oschina.net/oscnet/up-6220817d824cb9ad32eba2162da462bc3ef.png">
+  
+  
+  
+  
+
+  <!-- feed -->
+  
+
+  
+    
+<link rel="stylesheet" href="/css/main.css">
+
+  
+
+  
+
+  
+
+  
+
+
+  
+</head>
+
+<body>
+  
+
+
+
+
+  <div class='l_body' id='start'>
+    <aside class='l_left' layout='post'>
+    
+
+  
+
+<header class="header"><div class="logo-wrap"><a class="title" href="/"><div class="main" ff="title">彬的博客</div><div class="sub normal cap">苦逼的程序员</div><div class="sub hover cap" style="opacity:0"> 996加班中</div></a></div>
+
+<nav class="menu dis-select"></nav>
+</header>
+
+
+<div class="widgets">
+<widget class="widget-wrapper search"><div class="widget-body"><div class="search-wrapper" id="search"><form class="search-form"><input type="text" class="search-input" id="search-input" data-filter="/blog/" placeholder="文章搜索"><svg t="1670596976048" class="icon search-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2676" width="200" height="200"><path d="M938.2 832.6L723.8 618.1c-2.5-2.5-5.3-4.4-7.9-6.4 36.2-55.6 57.3-121.8 57.3-193.1C773.3 222.8 614.6 64 418.7 64S64 222.8 64 418.6c0 195.9 158.8 354.6 354.6 354.6 71.3 0 137.5-21.2 193.2-57.4 2 2.7 3.9 5.4 6.3 7.8L832.5 938c14.6 14.6 33.7 21.9 52.8 21.9 19.1 0 38.2-7.3 52.8-21.8 29.2-29.1 29.2-76.4 0.1-105.5M418.7 661.3C284.9 661.3 176 552.4 176 418.6 176 284.9 284.9 176 418.7 176c133.8 0 242.6 108.9 242.6 242.7 0 133.7-108.9 242.6-242.6 242.6" p-id="2677"></path></svg></form><div id="search-result"></div><div class="search-no-result">没有找到内容！</div></div></div></widget>
+
+
+<widget class="widget-wrapper toc single" id="data-toc"><div class="widget-header cap dis-select"><span class="name">记录使用微信支付 APIv3 Java SDK的使用和踩的一些坑</span></div><div class="widget-body fs14"><div class="doc-tree active"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8E%A5%E5%85%A5%E4%BD%BF%E7%94%A8"><span class="toc-text">接入使用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%95%E5%85%A5%E4%BE%9D%E8%B5%96"><span class="toc-text">引入依赖</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9E%84%E5%BB%BA%E5%85%A8%E5%B1%80%E8%87%AA%E5%8A%A8%E6%9B%B4%E6%96%B0%E5%B9%B3%E5%8F%B0%E8%AF%81%E4%B9%A6%E7%9A%84RSA%E9%85%8D%E7%BD%AE"><span class="toc-text">构建全局自动更新平台证书的RSA配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9E%84%E5%BB%BAh5%E7%BD%91%E9%A1%B5%E6%94%AF%E4%BB%98%E8%AF%B7%E6%B1%82"><span class="toc-text">构建h5网页支付请求</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%84%E7%90%86%E8%AE%A2%E5%8D%95%E6%94%AF%E4%BB%98%E5%9B%9E%E8%B0%83"><span class="toc-text">处理订单支付回调</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%A2%E5%8D%95%E8%AF%B7%E6%B1%82%E9%80%80%E6%AC%BE"><span class="toc-text">订单请求退款</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%80%80%E6%AC%BE%E5%9B%9E%E8%B0%83%E5%A4%84%E7%90%86"><span class="toc-text">退款回调处理</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E4%B8%AD%E7%A2%B0%E5%88%B0%E7%9A%84%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98"><span class="toc-text">使用中碰到的一些问题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#RSAAutoCertificateConfig%E9%85%8D%E7%BD%AE%E5%A4%9A%E6%AC%A1%E5%88%9D%E5%A7%8B%E5%8C%96%E9%97%AE%E9%A2%98"><span class="toc-text">RSAAutoCertificateConfig配置多次初始化问题</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%94%99%E8%AF%AF%E7%9A%84H5%E6%94%AF%E4%BB%98%E6%9E%84%E5%BB%BA%E6%96%B9%E5%BC%8F"><span class="toc-text">错误的H5支付构建方式</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%94%AF%E4%BB%98%E7%8A%B6%E6%80%81%E5%9B%9E%E8%B0%83%E9%AA%8C%E7%AD%BE%E9%97%AE%E9%A2%98"><span class="toc-text">支付状态回调验签问题</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9B%9E%E8%B0%83%E9%AA%8C%E7%AD%BE%E7%9A%84%E8%AF%B7%E6%B1%82%E4%BD%93%E7%9A%84%E8%AF%BB%E5%8F%96%E6%96%B9%E5%BC%8F%E9%94%99%E8%AF%AF%E5%AF%BC%E8%87%B4%E7%BC%BA%E5%B0%91%E7%A9%BA%E6%A0%BC%E3%80%81%E6%8D%A2%E8%A1%8C%E7%AD%89%E5%AD%97%E7%AC%A6%E6%88%96%E8%80%85%E8%BF%9B%E8%A1%8C%E4%BA%86JSON%E5%BA%8F%E5%88%97%E5%8C%96%E5%AF%BC%E8%87%B4%E9%AA%8C%E7%AD%BE%E5%A4%B1%E8%B4%A5"><span class="toc-text">回调验签的请求体的读取方式错误导致缺少空格、换行等字符或者进行了JSON序列化导致验签失败</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E9%94%99%E8%AF%AF%E4%BB%A3%E7%A0%81"><span class="toc-text">错误代码</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9E%84%E5%BB%BA%E9%AA%8C%E7%AD%BErequestParam%E6%97%B6serialNumber%E4%BD%BF%E7%94%A8%E4%BA%86%E9%85%8D%E7%BD%AE%E9%87%8C%E9%9D%A2%E7%9A%84%E8%AF%81%E4%B9%A6%E7%BC%96%E5%8F%B7%E5%AF%BC%E8%87%B4%E9%AA%8C%E7%AD%BE%E5%87%BA%E9%94%99-%E6%9E%84%E5%BB%BA%E6%97%B6%E9%9C%80%E8%A6%81%E4%BD%BF%E7%94%A8%E8%AF%B7%E6%B1%82%E5%A4%B4%E4%B8%AD%E8%BF%94%E5%9B%9E%E7%9A%84%E8%AF%81%E4%B9%A6%E7%BC%96%E5%8F%B7-%E5%9C%A8guthub%E7%9A%84issues%E4%B8%AD%E5%AD%98%E5%9C%A8%E9%9D%9E%E5%B8%B8%E5%A4%9A%E7%9A%84%E5%90%8C%E7%B1%BB%E5%9E%8B%E9%94%99%E8%AF%AF%E9%97%AE%E9%A2%98%E4%B8%80%E5%AE%9A%E8%A6%81%E6%B3%A8%E6%84%8F-%E5%A4%A9%E5%9D%91"><span class="toc-text">构建验签requestParam时serialNumber使用了配置里面的证书编号导致验签出错,构建时需要使用请求头中返回的证书编号;在guthub的issues中存在非常多的同类型错误问题一定要注意,天坑!!!</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E9%94%99%E8%AF%AF%E4%BB%A3%E7%A0%81-1"><span class="toc-text">错误代码</span></a></li></ol></li></ol></li></ol></li></ol></div></div></widget>
+
+
+
+
+</div>
+
+
+    </aside>
+    <div class='l_main'>
+      
+
+      
+
+
+
+<div class="bread-nav fs12"><div id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a><span class="sep"></span><a class="cap breadcrumb" href="/">文章</a></div><div id="post-meta">发布于&nbsp;<time datetime="2023-07-13T08:37:31.000Z">2023-07-13</time></div></div>
+
+<article class='md-text content post'>
+<h1 class="article-title"><span>记录使用微信支付 APIv3 Java SDK的使用和踩的一些坑</span></h1>
+<h2 id="接入使用"><a href="#接入使用" class="headerlink" title="接入使用"></a>接入使用</h2><h3 id="引入依赖"><a href="#引入依赖" class="headerlink" title="引入依赖"></a>引入依赖</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;com.github.wechatpay-apiv3&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;wechatpay-java&lt;/artifactId&gt;</span><br><span class="line">    &lt;version&gt;<span class="number">0.2</span><span class="number">.8</span>&lt;/version&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="构建全局自动更新平台证书的RSA配置"><a href="#构建全局自动更新平台证书的RSA配置" class="headerlink" title="构建全局自动更新平台证书的RSA配置"></a>构建全局自动更新平台证书的RSA配置</h3><p>我这里是多商户配置逻辑,所以会根据商户id作为配置的key</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> Map&lt;String, RSAAutoCertificateConfig&gt; configMap;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> RSAAutoCertificateConfig <span class="title function_">getConfig</span><span class="params">(BesaPayReqDTO besaPayReqDTO)</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (configMap == <span class="literal">null</span>) &#123;</span><br><span class="line">        configMap = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;String, RSAAutoCertificateConfig&gt;();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="type">RSAAutoCertificateConfig</span> <span class="variable">config</span> <span class="operator">=</span> configMap.get(besaPayReqDTO.getMerchantId());</span><br><span class="line">    <span class="keyword">if</span> (ObjectUtil.isNotEmpty(config)) &#123;</span><br><span class="line">        <span class="keyword">return</span> config;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    config =</span><br><span class="line">            <span class="keyword">new</span> <span class="title class_">RSAAutoCertificateConfig</span>.Builder()</span><br><span class="line">                    .merchantId(besaPayReqDTO.getMerchantId())</span><br><span class="line">                    .privateKey(besaPayReqDTO.getPrivateKey())</span><br><span class="line">                    .merchantSerialNumber(besaPayReqDTO.getMerchantSerialNumber())</span><br><span class="line">                    .apiV3Key(besaPayReqDTO.getApiV3key())</span><br><span class="line">                    .build();</span><br><span class="line"></span><br><span class="line">    configMap.put(besaPayReqDTO.getMerchantId(), config);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> config;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="构建h5网页支付请求"><a href="#构建h5网页支付请求" class="headerlink" title="构建h5网页支付请求"></a>构建h5网页支付请求</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * wap类型支付方式</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> prepayRequest 支付参数</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> besaPayReqDTO 通用支付配置</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">wapPay</span><span class="params">(PrepayRequest prepayRequest, BesaPayReqDTO besaPayReqDTO, Long merchantId)</span> &#123;</span><br><span class="line"></span><br><span class="line">        <span class="type">RSAAutoCertificateConfig</span> <span class="variable">config</span> <span class="operator">=</span> getConfig(besaPayReqDTO);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 构建service</span></span><br><span class="line">        <span class="type">H5Service</span> <span class="variable">service</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">H5Service</span>.Builder().config(config).build();</span><br><span class="line">        <span class="type">PrepayResponse</span> <span class="variable">prepay</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            prepay = service.prepay(prepayRequest);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            log.error(<span class="string">&quot;订单:&#123;&#125;,调用微信网页支付失败&quot;</span>, prepayRequest.getOutTradeNo());</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RuntimeException</span>(<span class="string">&quot;订单拉起微信支付失败&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 缓存支付配置,用于回调验签</span></span><br><span class="line">        redisService.setCacheObject(RedisWechatPayKeyConstant.WECHAT_PAY_CONFIG_CACHE + merchantId, besaPayReqDTO, <span class="number">3L</span>, TimeUnit.DAYS);</span><br><span class="line">        <span class="keyword">return</span> prepay.getH5Url();</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">返回h5支付链接给前端,等待用户完成支付</span><br></pre></td></tr></table></figure>
+
+<h3 id="处理订单支付回调"><a href="#处理订单支付回调" class="headerlink" title="处理订单支付回调"></a>处理订单支付回调</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 订单支付结果回调</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@PostMapping(&quot;/pay/wap/&#123;merchantId&#125;&quot;)</span></span><br><span class="line"><span class="keyword">public</span> CallbackRespDTO <span class="title function_">orderWapPayResult</span><span class="params">(HttpServletRequest request, HttpServletResponse response, <span class="meta">@PathVariable(&quot;merchantId&quot;)</span> Long merchantId)</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="type">Transaction</span> <span class="variable">transaction</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        transaction = callbackCheckSign(request, Transaction.class, merchantId);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">        log.error(<span class="string">&quot;微信支付回调处理异常,异常原因:&#123;&#125;&quot;</span>, e.getMessage());</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">        <span class="keyword">return</span> CallbackRespDTO.fail(response);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (ObjectUtil.isEmpty(transaction)) &#123;</span><br><span class="line">        log.error(<span class="string">&quot;微信支付回调参数解析失败!&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> CallbackRespDTO.fail(response);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 处理回调信息</span></span><br><span class="line">    xxxx.xxxxxxx(transaction)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> CallbackRespDTO.success();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 回调验签转换</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> &lt;T&gt;</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> request    回调</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> clazz      参数转换类型</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> merchantId 商户id</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> &lt;T&gt; T <span class="title function_">callbackCheckSign</span><span class="params">(HttpServletRequest request, Class&lt;T&gt; clazz, Long merchantId)</span> &#123;</span><br><span class="line">    <span class="comment">//随机串</span></span><br><span class="line">    <span class="type">String</span> <span class="variable">nonceStr</span> <span class="operator">=</span> request.getHeader(<span class="string">&quot;Wechatpay-Nonce&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//微信传递过来的签名</span></span><br><span class="line">    <span class="type">String</span> <span class="variable">signature</span> <span class="operator">=</span> request.getHeader(<span class="string">&quot;Wechatpay-Signature&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//证书序列号（微信平台）</span></span><br><span class="line">    <span class="type">String</span> <span class="variable">serialNo</span> <span class="operator">=</span> request.getHeader(<span class="string">&quot;Wechatpay-Serial&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//时间戳</span></span><br><span class="line">    <span class="type">String</span> <span class="variable">timestamp</span> <span class="operator">=</span> request.getHeader(<span class="string">&quot;Wechatpay-Timestamp&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 签名类型</span></span><br><span class="line">    <span class="type">String</span> <span class="variable">signatureType</span> <span class="operator">=</span> request.getHeader(<span class="string">&quot;Wechatpay-Signature-Type&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//获取报文</span></span><br><span class="line">    <span class="type">String</span> <span class="variable">body</span> <span class="operator">=</span> getRequestBody(request);</span><br><span class="line">    log.info(<span class="string">&quot;微信支付回调验签nonce:&#123;&#125;,signature:&#123;&#125;,serialNo:&#123;&#125;,timestamp:&#123;&#125;,body:&#123;&#125;&quot;</span>, nonceStr, signature, serialNo, timestamp, body);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 缓存获取配置</span></span><br><span class="line">    <span class="type">BesaPayReqDTO</span> <span class="variable">besaPayReqDTO</span> <span class="operator">=</span> redisService.getCacheObject(RedisWechatPayKeyConstant.WECHAT_PAY_CONFIG_CACHE + merchantId);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 构造 RequestParam</span></span><br><span class="line">    <span class="type">RequestParam</span> <span class="variable">requestParam</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">RequestParam</span>.Builder()</span><br><span class="line">            .serialNumber(serialNo)</span><br><span class="line">            .nonce(nonceStr)</span><br><span class="line">            .signature(signature)</span><br><span class="line">            .timestamp(timestamp)</span><br><span class="line">            .signType(signatureType)</span><br><span class="line">            .body(body)</span><br><span class="line">            .build();</span><br><span class="line"></span><br><span class="line">    <span class="type">NotificationConfig</span> <span class="variable">config</span> <span class="operator">=</span> wechatPayService.getConfig(besaPayReqDTO);</span><br><span class="line">    <span class="type">NotificationParser</span> <span class="variable">parser</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">NotificationParser</span>(config);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> parser.parse(requestParam, clazz);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 读取请求数据流</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> request</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> String <span class="title function_">getRequestBody</span><span class="params">(HttpServletRequest request)</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="type">ByteArrayOutputStream</span> <span class="variable">result</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ByteArrayOutputStream</span>();</span><br><span class="line">        <span class="type">ServletInputStream</span> <span class="variable">inputStream</span> <span class="operator">=</span> request.getInputStream();</span><br><span class="line">        <span class="type">byte</span>[] buffer = <span class="keyword">new</span> <span class="title class_">byte</span>[<span class="number">1024</span>];</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> length; (length = inputStream.read(buffer)) != -<span class="number">1</span>; ) &#123;</span><br><span class="line">            result.write(buffer, <span class="number">0</span>, length);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> result.toString(<span class="string">&quot;UTF-8&quot;</span>);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">        log.error(<span class="string">&quot;读取数据流异常:&#123;&#125;&quot;</span>, e);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="订单请求退款"><a href="#订单请求退款" class="headerlink" title="订单请求退款"></a>订单请求退款</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 退款</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> createRequest 支付参数</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> besaPayReqDTO 通用支付配置</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> Refund <span class="title function_">refund</span><span class="params">(CreateRequest createRequest, BesaPayReqDTO besaPayReqDTO, Long merchantId)</span> &#123;</span><br><span class="line">    <span class="type">RSAAutoCertificateConfig</span> <span class="variable">config</span> <span class="operator">=</span> getConfig(besaPayReqDTO);</span><br><span class="line">    <span class="comment">// 构建service</span></span><br><span class="line">    <span class="type">RefundService</span> <span class="variable">refundService</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">RefundService</span>.Builder().config(config).build();</span><br><span class="line">    <span class="type">Refund</span> <span class="variable">refund</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        refund = refundService.create(createRequest);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">        log.error(<span class="string">&quot;退款订单:&#123;&#125;,退款失败,退款单号:&#123;&#125;&quot;</span>, createRequest.getOutTradeNo(), createRequest.getOutRefundNo());</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RuntimeException</span>(e);</span><br><span class="line">    &#125;</span><br><span class="line">    redisService.setCacheObject(RedisWechatPayKeyConstant.WECHAT_PAY_CONFIG_CACHE + merchantId, besaPayReqDTO, <span class="number">3L</span>, TimeUnit.DAYS);</span><br><span class="line">    <span class="keyword">return</span> refund;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="退款回调处理"><a href="#退款回调处理" class="headerlink" title="退款回调处理"></a>退款回调处理</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 退款结果回调</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@PostMapping(&quot;/refund/&#123;merchantId&#125;&quot;)</span></span><br><span class="line"><span class="keyword">public</span> CallbackRespDTO <span class="title function_">orderRefundResult</span><span class="params">(HttpServletRequest request, HttpServletResponse response, <span class="meta">@PathVariable(&quot;merchantId&quot;)</span> Long merchantId)</span> &#123;</span><br><span class="line">    <span class="comment">//获取报文</span></span><br><span class="line">    <span class="type">RefundNotification</span> <span class="variable">refundNotification</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        refundNotification = callbackCheckSign(request, RefundNotification.class, merchantId);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">        log.error(<span class="string">&quot;微信退款回调处理异常,异常原因:&#123;&#125;&#125;&quot;</span>, e.getMessage());</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">        <span class="keyword">return</span> CallbackRespDTO.fail(response);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 处理回调信息</span></span><br><span class="line">    xxxx.xxxxxxx(refundNotification)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> CallbackRespDTO.success();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="使用中碰到的一些问题"><a href="#使用中碰到的一些问题" class="headerlink" title="使用中碰到的一些问题"></a>使用中碰到的一些问题</h2><h3 id="RSAAutoCertificateConfig配置多次初始化问题"><a href="#RSAAutoCertificateConfig配置多次初始化问题" class="headerlink" title="RSAAutoCertificateConfig配置多次初始化问题"></a>RSAAutoCertificateConfig配置多次初始化问题</h3><p>原写法是参考官方文档上的内容直接进行构建,导致在第二次请求支付时处出现证书配置初始化错误问题</p>
+<p>github类似问题issues</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/wechatpay-apiv3/wechatpay-java/issues/130">https://github.com/wechatpay-apiv3/wechatpay-java/issues/130</a></p>
+<div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://oscimg.oschina.net/oscnet/up-6220817d824cb9ad32eba2162da462bc3ef.png"/></div></div>
+
+<h4 id="错误的H5支付构建方式"><a href="#错误的H5支付构建方式" class="headerlink" title="错误的H5支付构建方式"></a>错误的H5支付构建方式</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * wap类型支付方式</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> prepayRequest 支付参数</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> besaPayReqDTO 通用支付配置</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">wapPay</span><span class="params">(PrepayRequest prepayRequest, BesaPayReqDTO besaPayReqDTO,Long merchantId)</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="type">Config</span> <span class="variable">config</span> <span class="operator">=</span></span><br><span class="line">            <span class="keyword">new</span> <span class="title class_">RSAAutoCertificateConfig</span>.Builder()</span><br><span class="line">                    .merchantId(besaPayReqDTO.getMerchantId())</span><br><span class="line">                    .privateKey(besaPayReqDTO.getPrivateKey())</span><br><span class="line">                    .merchantSerialNumber(besaPayReqDTO.getMerchantSerialNumber())</span><br><span class="line">                    .apiV3Key(besaPayReqDTO.getApiV3key())</span><br><span class="line">                    .build();</span><br><span class="line">    <span class="comment">// 构建service</span></span><br><span class="line">    <span class="type">H5Service</span> <span class="variable">service</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">H5Service</span>.Builder().config(config).build();</span><br><span class="line">    <span class="type">PrepayResponse</span> <span class="variable">prepay</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        prepay = service.prepay(prepayRequest);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">        log.error(<span class="string">&quot;订单:&#123;&#125;,调用微信网页支付失败&quot;</span>, prepayRequest.getOutTradeNo());</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RuntimeException</span>(<span class="string">&quot;订单拉起微信支付失败&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> prepay.getH5Url();</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="支付状态回调验签问题"><a href="#支付状态回调验签问题" class="headerlink" title="支付状态回调验签问题"></a>支付状态回调验签问题</h3><p>github类似问题issues</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/wechatpay-apiv3/wechatpay-java/issues/120">https://github.com/wechatpay-apiv3/wechatpay-java/issues/120</a></p>
+<h4 id="回调验签的请求体的读取方式错误导致缺少空格、换行等字符或者进行了JSON序列化导致验签失败"><a href="#回调验签的请求体的读取方式错误导致缺少空格、换行等字符或者进行了JSON序列化导致验签失败" class="headerlink" title="回调验签的请求体的读取方式错误导致缺少空格、换行等字符或者进行了JSON序列化导致验签失败"></a>回调验签的请求体的读取方式错误导致缺少空格、换行等字符或者进行了JSON序列化导致验签失败</h4><h5 id="错误代码"><a href="#错误代码" class="headerlink" title="错误代码"></a>错误代码</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 读取请求数据流</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> request</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> String <span class="title function_">getRequestBody</span><span class="params">(HttpServletRequest request)</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="type">StringBuffer</span> <span class="variable">sb</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">StringBuffer</span>();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span> (<span class="type">ServletInputStream</span> <span class="variable">inputStream</span> <span class="operator">=</span> request.getInputStream();</span><br><span class="line">         <span class="type">BufferedReader</span> <span class="variable">reader</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">BufferedReader</span>(<span class="keyword">new</span> <span class="title class_">InputStreamReader</span>(inputStream));</span><br><span class="line">    ) &#123;</span><br><span class="line">        String line;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> ((line = reader.readLine()) != <span class="literal">null</span>) &#123;</span><br><span class="line">            sb.append(line);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">        log.error(<span class="string">&quot;读取数据流异常:&#123;&#125;&quot;</span>, e);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> sb.toString();</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="构建验签requestParam时serialNumber使用了配置里面的证书编号导致验签出错-构建时需要使用请求头中返回的证书编号-在guthub的issues中存在非常多的同类型错误问题一定要注意-天坑"><a href="#构建验签requestParam时serialNumber使用了配置里面的证书编号导致验签出错-构建时需要使用请求头中返回的证书编号-在guthub的issues中存在非常多的同类型错误问题一定要注意-天坑" class="headerlink" title="构建验签requestParam时serialNumber使用了配置里面的证书编号导致验签出错,构建时需要使用请求头中返回的证书编号;在guthub的issues中存在非常多的同类型错误问题一定要注意,天坑!!!"></a>构建验签requestParam时serialNumber使用了配置里面的证书编号导致验签出错,构建时需要使用请求头中返回的证书编号;在guthub的issues中存在非常多的同类型错误问题一定要注意,天坑!!!</h4><div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://oscimg.oschina.net/oscnet/up-d62de331a15997e605d1e5a5041bc1338bb.png"/></div></div>
+
+<h5 id="错误代码-1"><a href="#错误代码-1" class="headerlink" title="错误代码"></a>错误代码</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 回调验签转换</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> &lt;T&gt;</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> request    回调</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> clazz      参数转换类型</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> merchantId 商户id</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> body</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> &lt;T&gt; T <span class="title function_">callbackCheckSign</span><span class="params">(HttpServletRequest request, Class&lt;T&gt; clazz, Long merchantId, String body)</span> &#123;</span><br><span class="line">    <span class="comment">//随机串</span></span><br><span class="line">    <span class="type">String</span> <span class="variable">nonceStr</span> <span class="operator">=</span> request.getHeader(<span class="string">&quot;Wechatpay-Nonce&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//微信传递过来的签名</span></span><br><span class="line">    <span class="type">String</span> <span class="variable">signature</span> <span class="operator">=</span> request.getHeader(<span class="string">&quot;Wechatpay-Signature&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//证书序列号（微信平台）</span></span><br><span class="line">    <span class="type">String</span> <span class="variable">serialNo</span> <span class="operator">=</span> request.getHeader(<span class="string">&quot;Wechatpay-Serial&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//时间戳</span></span><br><span class="line">    <span class="type">String</span> <span class="variable">timestamp</span> <span class="operator">=</span> request.getHeader(<span class="string">&quot;Wechatpay-Timestamp&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 缓存获取配置</span></span><br><span class="line">    <span class="type">BesaPayReqDTO</span> <span class="variable">besaPayReqDTO</span> <span class="operator">=</span> redisService.getCacheObject(RedisWechatPayKeyConstant.WECHAT_PAY_CONFIG_CACHE + merchantId);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (besaPayReqDTO.getMerchantSerialNumber().equals(serialNo)) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RuntimeException</span>(<span class="string">&quot;回调证书序列号和请求序列号不一致!&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 构造 RequestParam</span></span><br><span class="line">    <span class="type">RequestParam</span> <span class="variable">requestParam</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">RequestParam</span>.Builder()</span><br><span class="line">            .serialNumber(besaPayReqDTO.getMerchantSerialNumber())</span><br><span class="line">            .nonce(nonceStr)</span><br><span class="line">            .signature(signature)</span><br><span class="line">            .timestamp(timestamp)</span><br><span class="line">            .body(body)</span><br><span class="line">            .build();</span><br><span class="line"></span><br><span class="line">    <span class="type">NotificationConfig</span> <span class="variable">config</span> <span class="operator">=</span> wechatPayService.getConfig(besaPayReqDTO);</span><br><span class="line">    <span class="type">NotificationParser</span> <span class="variable">parser</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">NotificationParser</span>(config);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> parser.parse(requestParam, clazz);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<div class="article-footer reveal fs14"><section id="license"><div class="header"><span>许可协议</span></div><div class="body"><p>本文采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">署名-非商业性使用-相同方式共享 4.0 国际</a> 许可协议，转载请注明出处。</p>
+</div></section></div>
+
+</article>
+
+<div class="related-wrap reveal" id="read-next"><section class="body"><div class="item" id="prev"></div><div class="item" id="next"><div class="note">较早文章</div><a href="/2023/06/19/aws-toolkit-AI%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B%E5%92%8C%E4%B8%AA%E4%BA%BA%E6%84%9F%E5%8F%97/">aws toolkit AI代码提示工具使用教程和个人感受</a></div></section></div>
+
+
+
+
+
+
+
+
+      
+<footer class="page-footer reveal fs12"><hr><div class="text"><p>本站由 <a href="/">@binvv</a> 使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar">Stellar</a> 主题创建。<br>本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议，转载请注明出处。</p>
+</div></footer>
+
+      <div class='float-panel mobile-only blur' style='display:none'>
+  <button type='button' class='sidebar-toggle mobile' onclick='sidebar.toggle()'>
+    <svg class="icon" style="width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="15301"><path d="M566.407 808.3c26.9-0.1 49.3-20.8 51.6-47.6-1.9-27.7-23.9-49.7-51.6-51.6h-412.6c-28.2-1.4-52.6 19.5-55.5 47.6 2.3 26.8 24.6 47.5 51.6 47.6h416.5v4z m309.3-249.9c26.9-0.1 49.3-20.8 51.6-47.6-2.2-26.8-24.6-47.5-51.6-47.6h-721.9c-27.7-2.8-52.5 17.4-55.3 45.1-0.1 0.8-0.1 1.7-0.2 2.5 0.9 27.2 23.6 48.5 50.7 47.6H875.707z m-103.1-245.9c26.9-0.1 49.3-20.8 51.6-47.6-0.4-28.3-23.2-51.1-51.5-51.6h-618.9c-29.5-1.1-54.3 21.9-55.5 51.4v0.2c1.4 27.8 25.2 49.2 53 47.8 0.8 0 1.7-0.1 2.5-0.2h618.8z" p-id="15302"></path><path d="M566.407 808.3c26.9-0.1 49.3-20.8 51.6-47.6-1.9-27.7-23.9-49.7-51.6-51.6h-412.6c-28.2-1.4-52.6 19.5-55.5 47.6 1.9 27.7 23.9 49.7 51.6 51.6h416.5z m309.3-249.9c26.9-0.1 49.3-20.8 51.6-47.6-2.2-26.8-24.6-47.5-51.6-47.6h-721.9c-27.7-2.8-52.5 17.4-55.3 45.1-0.1 0.8-0.1 1.7-0.2 2.5 0.9 27.2 23.6 48.5 50.7 47.6H875.707z m-103.1-245.9c26.9-0.1 49.3-20.8 51.6-47.6-0.4-28.3-23.2-51.1-51.5-51.6h-618.9c-29.5-1.1-54.3 21.9-55.5 51.4v0.2c1.4 27.8 25.2 49.2 53 47.8 0.8 0 1.7-0.1 2.5-0.2h618.8z" p-id="15303"></path></svg>
+  </button>
+</div>
+
+    </div>
+  </div>
+  <div class='scripts'>
+    <script type="text/javascript">
+  const stellar = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    loadCSS: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    // 从 butterfly 和 volantis 获得灵感
+    loadScript: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      if (src.startsWith('/')){
+        src = stellar.config.root + src.substring(1);
+      }
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    // https://github.com/jerryc127/hexo-theme-butterfly
+    jQuery: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        stellar.loadScript(stellar.plugins.jQuery).then(fn)
+      } else {
+        fn()
+      }
+    }
+  };
+  stellar.version = '1.19.0';
+  stellar.github = 'https://github.com/xaoxuu/hexo-theme-stellar/tree/1.19.0';
+  stellar.config = {
+    date_suffix: {
+      just: '刚刚',
+      min: '分钟前',
+      hour: '小时前',
+      day: '天前',
+      month: '个月前',
+    },
+    root : '/',
+  };
+
+  // required plugins (only load if needs)
+  stellar.plugins = {
+    jQuery: 'https://gcore.jsdelivr.net/npm/jquery@3.6.2/dist/jquery.min.js'
+  };
+
+  if ('local_search') {
+    stellar.search = {};
+    stellar.search.service = 'local_search';
+    if (stellar.search.service == 'local_search') {
+      let service_obj = Object.assign({}, {"field":"all","path":"/search.json","content":true,"sort":"-date"});
+      stellar.search[stellar.search.service] = service_obj;
+    }
+  }
+
+  // stellar js
+  stellar.plugins.stellar = Object.assign({"sites":"/js/plugins/sites.js","friends":"/js/plugins/friends.js","ghinfo":"/js/plugins/ghinfo.js","timeline":"/js/plugins/timeline.js","linkcard":"/js/plugins/linkcard.js","fcircle":"/js/plugins/fcircle.js","weibo":"/js/plugins/weibo.js"});
+
+  stellar.plugins.marked = Object.assign("https://cdn.bootcdn.net/ajax/libs/marked/4.0.18/marked.min.js");
+  // optional plugins
+  if ('true' == 'true') {
+    stellar.plugins.lazyload = Object.assign({"enable":true,"js":"https://gcore.jsdelivr.net/npm/vanilla-lazyload@17.8.3/dist/lazyload.min.js","transition":"blur"});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.swiper = Object.assign({"enable":true,"css":"https://unpkg.com/swiper@8.4.5/swiper-bundle.min.css","js":"https://unpkg.com/swiper@8.4.5/swiper-bundle.min.js"});
+  }
+  if ('' == 'true') {
+    stellar.plugins.scrollreveal = Object.assign({"enable":null,"js":"https://gcore.jsdelivr.net/npm/scrollreveal@4.0.9/dist/scrollreveal.min.js","distance":"8px","duration":500,"interval":100,"scale":1});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.preload = Object.assign({"enable":true,"service":"flying_pages","instant_page":"https://gcore.jsdelivr.net/gh/volantis-x/cdn-volantis@4.1.2/js/instant_page.js","flying_pages":"https://gcore.jsdelivr.net/gh/gijo-varghese/flying-pages@2.1.2/flying-pages.min.js"});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.fancybox = Object.assign({"enable":true,"js":"https://gcore.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js","css":"https://gcore.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.css","selector":".swiper-slide img"});
+  }
+  if ('false' == 'true') {
+    stellar.plugins.heti = Object.assign({"enable":false,"css":"https://unpkg.com/heti@0.9.2/umd/heti.min.css","js":"https://unpkg.com/heti@0.9.2/umd/heti-addon.min.js"});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.copycode = Object.assign({"enable":true,"js":"/js/plugins/copycode.js","default_text":"Copy","success_text":"Copied"});
+  }
+</script>
+
+<!-- required -->
+
+  
+<script src="/js/main.js" async></script>
+
+
+
+<!-- optional -->
+
+
+
+<!-- inject -->
+
+
+  </div>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/z16.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":false},"react":{"opacity":0.7},"log":false});</script></body>
+</html>
